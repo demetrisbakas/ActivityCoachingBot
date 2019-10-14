@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.62
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityCoachingBot", "ActivityCoachingBot\ActivityCoachingBot.csproj", "{0F3C432F-31AE-4869-B80F-B2B0C30FE05D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F3C432F-31AE-4869-B80F-B2B0C30FE05D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3C432F-31AE-4869-B80F-B2B0C30FE05D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3C432F-31AE-4869-B80F-B2B0C30FE05D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3C432F-31AE-4869-B80F-B2B0C30FE05D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9508D7EE-547A-45A0-95A8-C0CDA23E3947}
+	EndGlobalSection
+EndGlobal
