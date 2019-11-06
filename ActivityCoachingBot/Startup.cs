@@ -12,19 +12,58 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using ActivityCoachingBot.Bots;
+using Microsoft.Bot.Builder.AI.Luis;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
+using Microsoft.Bot.Builder.Integration;
+using System.Linq;
 
 namespace ActivityCoachingBot
 {
     public class Startup
     {
+        private readonly LuisRecognizer _recognizer;
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+
+
+
+
+
+
+            var luisIsConfigured = !string.IsNullOrEmpty(configuration["LuisAppId"]) && !string.IsNullOrEmpty(configuration["LuisAPIKey"]) && !string.IsNullOrEmpty(configuration["LuisAPIHostName"]);
+            if (luisIsConfigured)
+            {
+                var luisApplication = new LuisApplication(
+                    configuration["LuisAppId"],
+                    configuration["LuisAPIKey"],
+                    "https://" + configuration["LuisAPIHostName"]);
+
+                _recognizer = new LuisRecognizer(luisApplication);
+            }
         }
+
+        //Returns true if luis is configured in the appsettings.json and initialized.
+        public virtual bool IsConfigured => _recognizer != null;
+
+        public virtual async Task<RecognizerResult> RecognizeAsync(ITurnContext turnContext, CancellationToken cancellationToken)
+            => await _recognizer.RecognizeAsync(turnContext, cancellationToken);
+
+        public virtual async Task<T> RecognizeAsync<T>(ITurnContext turnContext, CancellationToken cancellationToken)
+            where T : IRecognizerConvert, new()
+            => await _recognizer.RecognizeAsync<T>(turnContext, cancellationToken);
+
+
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
+
+        //This method gets called by the runtime.Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

@@ -1,0 +1,18 @@
+{
+    "name": "ActivityCoachingBot",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages",
+            "id": "f094b210-fea0-11e9-81a6-a177b1f62e5c",
+            "name": "http://localhost:3978/api/messages"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "overrides": null,
+    "path": "C:\\SourceTree Repos\\ActivityCoachingBot\\ActivityCoachingBot\\ActivityCoachingBot.bot"
+}
