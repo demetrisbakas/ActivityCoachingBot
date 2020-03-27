@@ -74,7 +74,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (personalDetails.Sex == null)
             {
                 var promptMessage = MessageFactory.Text(SexStepMsgText, SexStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.BeginDialogAsync(nameof(DateResolverDialog), personalDetails.Sex, cancellationToken);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
             return await stepContext.NextAsync(personalDetails.Sex, cancellationToken);

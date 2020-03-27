@@ -20,7 +20,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         protected readonly ILogger Logger;
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, /*PersonalDetailsDialog personalDetailsDialog,*/ ILogger<MainDialog> logger)
+        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -28,7 +28,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(bookingDialog);
-            //AddDialog(personalDetailsDialog);
+            AddDialog(personalDetailsDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
@@ -92,9 +92,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 case FlightBooking.Intent.Greet:
                     // Greeting message
-                    //var greetText = $"Hello!";
-                    //var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
-                    //await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
+                    var greetText = $"Hello!";
+                    var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
+                    await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
 
 
 
