@@ -108,6 +108,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     var personalDetails = new PersonalDetails()
                     {
                         // Get destination and origin from the composite entities arrays.
+                        //Name = luisResult.Entities.datetime.ToString(),
                         Name = luisResult.ToEntities.Airport,
                         Age = luisResult.FromEntities.Airport,
                         Sex = luisResult.TravelDate,

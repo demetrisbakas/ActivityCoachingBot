@@ -29,6 +29,7 @@ namespace Microsoft.BotBuilderSamples
 
             // Built-in entities
             public DateTimeSpec[] datetime;
+            //public personName[] personName;
 
             // Lists
             public string[][] Airport;
@@ -62,6 +63,7 @@ namespace Microsoft.BotBuilderSamples
             public class _Instance
             {
                 public InstanceData[] datetime;
+                public InstanceData[] personName;
                 public InstanceData[] Airport;
                 public InstanceData[] From;
                 public InstanceData[] To;

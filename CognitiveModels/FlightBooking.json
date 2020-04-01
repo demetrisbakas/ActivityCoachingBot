@@ -88,6 +88,10 @@
     {
       "name": "datetimeV2",
       "roles": []
+    },
+    {
+      "name": "personName",
+      "roles": []
     }
   ],
   "model_features": [],

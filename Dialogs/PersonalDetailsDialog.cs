@@ -96,9 +96,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             if ((bool)stepContext.Result)
             {
-                var bookingDetails = (BookingDetails)stepContext.Options;
+                var personalDetails = (PersonalDetails)stepContext.Options;
 
-                return await stepContext.EndDialogAsync(bookingDetails, cancellationToken);
+                return await stepContext.EndDialogAsync(personalDetails, cancellationToken);
             }
 
             return await stepContext.EndDialogAsync(null, cancellationToken);
