@@ -18,6 +18,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
     {
         private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
+        public ResponseText response = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, ILogger<MainDialog> logger)
@@ -91,8 +92,18 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     break;
 
                 case FlightBooking.Intent.Greet:
+                    // Deatails of the user
+                    var personalDetails = new PersonalDetails()
+                    {
+                        // Get destination and origin from the composite entities arrays.
+                        //Name = luisResult.Entities.datetime.ToString(),
+                        Name = luisResult.ToEntities.Airport,
+                        Age = luisResult.FromEntities.Airport,
+                        Sex = luisResult.TravelDate,
+                    };
+
                     // Greeting message
-                    var greetText = $"Hello!";
+                    var greetText = (personalDetails.Name == null ? response.Greet() : response.Greet(personalDetails.Name));
                     var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
 
@@ -102,17 +113,17 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
 
-                    await ShowWarningForUnsupportedCities(stepContext.Context, luisResult, cancellationToken);
+                    //await ShowWarningForUnsupportedCities(stepContext.Context, luisResult, cancellationToken);
 
                     // Initialize BookingDetails with any entities we may have found in the response.
-                    var personalDetails = new PersonalDetails()
-                    {
-                        // Get destination and origin from the composite entities arrays.
-                        //Name = luisResult.Entities.datetime.ToString(),
-                        Name = luisResult.ToEntities.Airport,
-                        Age = luisResult.FromEntities.Airport,
-                        Sex = luisResult.TravelDate,
-                    };
+                    //var personalDetails = new PersonalDetails()
+                    //{
+                    //    // Get destination and origin from the composite entities arrays.
+                    //    //Name = luisResult.Entities.datetime.ToString(),
+                    //    Name = luisResult.ToEntities.Airport,
+                    //    Age = luisResult.FromEntities.Airport,
+                    //    Sex = luisResult.TravelDate,
+                    //};
 
                     // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), personalDetails, cancellationToken);
