@@ -18,7 +18,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
     {
         private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
-        public ResponseText response = new ResponseText();
+        public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, ILogger<MainDialog> logger)
@@ -103,7 +103,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     };
 
                     // Greeting message
-                    var greetText = (personalDetails.Name == null ? response.Greet() : response.Greet(personalDetails.Name));
+                    var greetText = (personalDetails.Name == null ? Response.Greet() : Response.Greet(personalDetails.Name));
                     var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
 

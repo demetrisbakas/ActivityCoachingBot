@@ -12,9 +12,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class PersonalDetailsDialog : CancelAndHelpDialog
     {
-        private const string NameStepMsgText = "What is your name?";
-        private const string AgeStepMsgText = "How old are you?";
-        private const string SexStepMsgText = "What is your sex?";
+        private readonly string NameStepMsgText = MainDialog.Response.AskName();
+        private readonly string AgeStepMsgText = MainDialog.Response.AskAge();
+        private readonly string SexStepMsgText = MainDialog.Response.AskSex();
 
         public PersonalDetailsDialog()
             : base(nameof(PersonalDetailsDialog))
