@@ -7,6 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
@@ -68,7 +69,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             var personalDetails= (PersonalDetails)stepContext.Options;
 
-            personalDetails.Age = (string)stepContext.Result;
+            personalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
+            //personalDetails.Age = (string)stepContext.Result;
 
             // Need to find a more suitable type
             if (personalDetails.Sex == null)
@@ -84,9 +86,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             var personalDetails = (PersonalDetails)stepContext.Options;
 
-            personalDetails.Sex = (string)stepContext.Result;
+            if(Regex.IsMatch((string)stepContext.Result, "female", RegexOptions.IgnoreCase))
+                personalDetails.Sex = "Female";
+            else if (Regex.IsMatch((string)stepContext.Result, "male", RegexOptions.IgnoreCase))
+                personalDetails.Sex = "Male";
+            else
+                personalDetails.Sex = null;
+            //personalDetails.Sex = (string)stepContext.Result;
 
-            var messageText = $"Please confirm, this is yourpersonal info: Name: {personalDetails.Name} Age: {personalDetails.Age} Sex: {personalDetails.Sex}. Is this correct?";
+            var messageText = $"Please confirm, this is your personal info: Name: {personalDetails.Name} Age: {personalDetails.Age} Sex: {personalDetails.Sex}. Is this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
