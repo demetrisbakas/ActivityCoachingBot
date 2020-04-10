@@ -42,7 +42,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (personalDetails.Name == null)
             {
-                //var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
                 NameStepMsgText = MainDialog.Response.AskName();
                 var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
