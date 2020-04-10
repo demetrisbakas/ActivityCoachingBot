@@ -8,7 +8,7 @@ namespace Microsoft.BotBuilderSamples
 {
     public class ResponseText
     {
-        readonly Random rnd = new Random();
+        private readonly Random rnd = new Random();
 
         // Response Lists
         private readonly List<string> greetList = new List<string>() { "Hello!", "Hi!", "Hey!" };

@@ -13,9 +13,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class PersonalDetailsDialog : CancelAndHelpDialog
     {
-        private readonly string NameStepMsgText = MainDialog.Response.AskName();
-        private readonly string AgeStepMsgText = MainDialog.Response.AskAge();
-        private readonly string SexStepMsgText = MainDialog.Response.AskSex();
+        private string NameStepMsgText;
+        private string AgeStepMsgText;
+        private string SexStepMsgText;
 
         public PersonalDetailsDialog()
             : base(nameof(PersonalDetailsDialog))
@@ -42,6 +42,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (personalDetails.Name == null)
             {
+                //var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
+                NameStepMsgText = MainDialog.Response.AskName();
                 var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
@@ -58,6 +60,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Need to make int work as null
             if (personalDetails.Age == null)
             {
+                AgeStepMsgText = MainDialog.Response.AskAge();
                 var promptMessage = MessageFactory.Text(AgeStepMsgText, AgeStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
@@ -75,6 +78,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Need to find a more suitable type
             if (personalDetails.Sex == null)
             {
+                SexStepMsgText = MainDialog.Response.AskSex();
                 var promptMessage = MessageFactory.Text(SexStepMsgText, SexStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
@@ -105,6 +109,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if ((bool)stepContext.Result)
             {
                 var personalDetails = (PersonalDetails)stepContext.Options;
+
+                // Upload to database
+
 
                 return await stepContext.EndDialogAsync(personalDetails, cancellationToken);
             }
