@@ -17,6 +17,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private string AgeStepMsgText;
         private string SexStepMsgText;
 
+        public static PersonalDetails PersonalDetails { get; set; } = new PersonalDetails();
+
         public PersonalDetailsDialog()
             : base(nameof(PersonalDetailsDialog))
         {
@@ -38,66 +40,66 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var personalDetails = (PersonalDetails)stepContext.Options;
+            //PersonalDetails = (PersonalDetails)stepContext.Options;
 
-            if (personalDetails.Name == null)
+            if (PersonalDetails.Name == null)
             {
                 NameStepMsgText = MainDialog.Response.AskName();
                 var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            return await stepContext.NextAsync(personalDetails.Name, cancellationToken);
+            return await stepContext.NextAsync(PersonalDetails.Name, cancellationToken);
         }
 
         private async Task<DialogTurnResult> AgeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var personalDetails = (PersonalDetails)stepContext.Options;
+            //PersonalDetails = (PersonalDetails)stepContext.Options;
 
-            personalDetails.Name = (string)stepContext.Result;
+            PersonalDetails.Name = (string)stepContext.Result;
 
             // Need to make int work as null
-            if (personalDetails.Age == null)
+            if (PersonalDetails.Age == null)
             {
                 AgeStepMsgText = MainDialog.Response.AskAge();
                 var promptMessage = MessageFactory.Text(AgeStepMsgText, AgeStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            return await stepContext.NextAsync(personalDetails.Age, cancellationToken);
+            return await stepContext.NextAsync(PersonalDetails.Age, cancellationToken);
         }
 
         private async Task<DialogTurnResult> SexStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var personalDetails= (PersonalDetails)stepContext.Options;
+            //PersonalDetails= (PersonalDetails)stepContext.Options;
 
-            personalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
+            PersonalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
             //personalDetails.Age = (string)stepContext.Result;
 
             // Need to find a more suitable type
-            if (personalDetails.Sex == null)
+            if (PersonalDetails.Sex == null)
             {
                 SexStepMsgText = MainDialog.Response.AskSex();
                 var promptMessage = MessageFactory.Text(SexStepMsgText, SexStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            return await stepContext.NextAsync(personalDetails.Sex, cancellationToken);
+            return await stepContext.NextAsync(PersonalDetails.Sex, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var personalDetails = (PersonalDetails)stepContext.Options;
+            //PersonalDetails = (PersonalDetails)stepContext.Options;
 
             if(Regex.IsMatch((string)stepContext.Result, "female", RegexOptions.IgnoreCase))
-                personalDetails.Sex = "Female";
+                PersonalDetails.Sex = "Female";
             else if (Regex.IsMatch((string)stepContext.Result, "male", RegexOptions.IgnoreCase))
-                personalDetails.Sex = "Male";
+                PersonalDetails.Sex = "Male";
             else
-                personalDetails.Sex = null;
+                PersonalDetails.Sex = null;
             //personalDetails.Sex = (string)stepContext.Result;
 
-            var messageText = $"Please confirm, this is your personal info: Name: {personalDetails.Name} Age: {personalDetails.Age} Sex: {personalDetails.Sex}. Is this correct?";
+            var messageText = $"Please confirm, this is your personal info:\n\nUser ID: {PersonalDetails.UserID}\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
@@ -111,6 +113,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 // Upload to database
 
+                // Wipe the personalDetails for testing purposes
+                //PersonalDetails = new PersonalDetails();
 
                 return await stepContext.EndDialogAsync(personalDetails, cancellationToken);
             }

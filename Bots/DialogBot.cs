@@ -33,6 +33,14 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
+            //
+            //var userName = turnContext.Activity.From.Name;
+            //var userID = turnContext.Activity.From.Id;
+            //await turnContext.SendActivityAsync($"Welcome - {userName}, {userID}");
+            if (Dialogs.PersonalDetailsDialog.PersonalDetails.UserID == null)
+                Dialogs.PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
+            //
+
             await base.OnTurnAsync(turnContext, cancellationToken);
 
             // Save any state changes that might have occured during the turn.

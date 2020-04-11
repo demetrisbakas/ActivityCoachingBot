@@ -93,7 +93,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 case FlightBooking.Intent.Greet:
                     // Deatails of the user
-                    var personalDetails = new PersonalDetails()
+                    // IMPORTANT Wipes the data of the user
+                    PersonalDetailsDialog.PersonalDetails = new PersonalDetails()
                     {
                         // Get destination and origin from the composite entities arrays.
                         //Name = luisResult.Entities.datetime.ToString(),
@@ -103,7 +104,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     };
 
                     // Greeting message
-                    var greetText = (personalDetails.Name == null ? Response.Greet() : Response.Greet(personalDetails.Name));
+                    var greetText = (PersonalDetailsDialog.PersonalDetails.Name == null ? Response.Greet() : Response.Greet(PersonalDetailsDialog.PersonalDetails.Name));
                     var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
 
@@ -126,7 +127,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     //};
 
                     // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                    return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), personalDetails, cancellationToken);
+                    return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 
                     
 
