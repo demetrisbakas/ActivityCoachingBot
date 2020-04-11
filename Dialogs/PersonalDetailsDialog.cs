@@ -99,7 +99,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 PersonalDetails.Sex = null;
             //personalDetails.Sex = (string)stepContext.Result;
 
-            var messageText = $"Please confirm, this is your personal info:\n\nUser ID: {PersonalDetails.UserID}\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
+            var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
@@ -109,17 +109,23 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             if ((bool)stepContext.Result)
             {
-                var personalDetails = (PersonalDetails)stepContext.Options;
+                //var personalDetails = (PersonalDetails)stepContext.Options;
 
                 // Upload to database
 
                 // Wipe the personalDetails for testing purposes
                 //PersonalDetails = new PersonalDetails();
 
-                return await stepContext.EndDialogAsync(personalDetails, cancellationToken);
+                return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
+            }
+            else
+            {
+                PersonalDetails = new PersonalDetails();
+
+                return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetails, cancellationToken);
             }
 
-            return await stepContext.EndDialogAsync(null, cancellationToken);
+            //return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 
         //private static bool IsAmbiguous(string timex)
