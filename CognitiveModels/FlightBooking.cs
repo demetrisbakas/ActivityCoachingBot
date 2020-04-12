@@ -29,7 +29,7 @@ namespace Microsoft.BotBuilderSamples
 
             // Built-in entities
             public DateTimeSpec[] datetime;
-            //public personName[] personName;
+            public string[] personName;
 
             // Lists
             public string[][] Airport;
