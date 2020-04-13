@@ -9,10 +9,27 @@ using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using System.Text.RegularExpressions;
 
+//
+using Microsoft.Extensions.Configuration;
+//
+
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class PersonalDetailsDialog : CancelAndHelpDialog
     {
+        //
+        //static IConfiguration configuration;
+        //private readonly FlightBookingRecognizer _luisRecognizer = new FlightBookingRecognizer(configuration);
+        //
+        FlightBooking luisResult;
+
+
+
+
+
+
+
+
         private string NameStepMsgText;
         private string AgeStepMsgText;
         private string SexStepMsgText;
@@ -46,6 +63,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 NameStepMsgText = MainDialog.Response.AskName();
                 var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
+
+                //
+                //var temp = _luisRecognizer.IsConfigured;
+                //luisResult = await MainDialog._luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+                //string name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
+                //
+
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
@@ -56,7 +80,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             //PersonalDetails = (PersonalDetails)stepContext.Options;
 
-            PersonalDetails.Name = (string)stepContext.Result;
+            //
+            luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
+            //PersonalDetails.Name = (string)stepContext.Result;
 
             // Need to make int work as null
             if (PersonalDetails.Age == null)
