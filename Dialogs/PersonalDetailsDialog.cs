@@ -100,7 +100,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             //PersonalDetails= (PersonalDetails)stepContext.Options;
 
-            PersonalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
+            //PersonalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
+            luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : null);
+
             //personalDetails.Age = (string)stepContext.Result;
 
             // Need to find a more suitable type

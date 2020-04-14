@@ -92,6 +92,10 @@
     {
       "name": "personName",
       "roles": []
+    },
+    {
+      "name": "age",
+      "roles": []
     }
   ],
   "model_features": [],
