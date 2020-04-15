@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using System.Text.RegularExpressions;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 
 //
 using Microsoft.Extensions.Configuration;
@@ -42,6 +43,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new DateResolverDialog());
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 NameStepAsync,
@@ -80,10 +82,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             //PersonalDetails = (PersonalDetails)stepContext.Options;
 
-            //
-            luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
-            PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
-            //PersonalDetails.Name = (string)stepContext.Result;
+            if (PersonalDetails.Name == null)
+            {
+                luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+                PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
+                //PersonalDetails.Name = (string)stepContext.Result;
+            }
 
             // Need to make int work as null
             if (PersonalDetails.Age == null)
@@ -102,17 +106,42 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             //PersonalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
             luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
-            PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : null);
+            PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match((string)stepContext.Result, @"\d+").Value);
 
             //personalDetails.Age = (string)stepContext.Result;
+
+            //if(PersonalDetails.Age == null)
+            //{
+            //    string errorMessage = "Didnt get that, lets try again.";
+            //    var promptMessage = MessageFactory.Text(errorMessage, errorMessage, InputHints.ExpectingInput);
+            //    await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+
+
+            //    return await stepContext.ReplaceDialogAsync(nameof(PersonalDetailsDialog.AgeStepAsync), PersonalDetails, cancellationToken);
+            //}
 
             // Need to find a more suitable type
             if (PersonalDetails.Sex == null)
             {
                 SexStepMsgText = MainDialog.Response.AskSex();
                 var promptMessage = MessageFactory.Text(SexStepMsgText, SexStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+
+
+
+
+
+
+                List<Choice> sexChoice = new List<Choice>() { new Choice("Male"), new Choice("Female") };
+
+                //
+                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice }, cancellationToken);
+                //
             }
+
+
+
+
 
             return await stepContext.NextAsync(PersonalDetails.Sex, cancellationToken);
         }
@@ -121,13 +150,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             //PersonalDetails = (PersonalDetails)stepContext.Options;
 
-            if(Regex.IsMatch((string)stepContext.Result, "female", RegexOptions.IgnoreCase))
-                PersonalDetails.Sex = "Female";
-            else if (Regex.IsMatch((string)stepContext.Result, "male", RegexOptions.IgnoreCase))
-                PersonalDetails.Sex = "Male";
-            else
-                PersonalDetails.Sex = null;
-            //personalDetails.Sex = (string)stepContext.Result;
+            //if(Regex.IsMatch((string)stepContext.Result, "female", RegexOptions.IgnoreCase))
+            //    PersonalDetails.Sex = "Female";
+            //else if (Regex.IsMatch((string)stepContext.Result, "male", RegexOptions.IgnoreCase))
+            //    PersonalDetails.Sex = "Male";
+            //else
+            //    PersonalDetails.Sex = null;
+
+
+            if (PersonalDetails.Sex == null)
+                PersonalDetails.Sex = stepContext.Result.ToString();
 
             var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
