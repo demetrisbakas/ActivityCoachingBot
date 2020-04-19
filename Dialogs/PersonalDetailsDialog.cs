@@ -28,12 +28,18 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private string AgeStepMsgText;
         private string SexStepMsgText;
 
+        private enum Validator
+        {
+            Name,
+            Age
+        };
+
         public static PersonalDetails PersonalDetails { get; set; } = new PersonalDetails();
 
         public PersonalDetailsDialog()
             : base(nameof(PersonalDetailsDialog))
         {
-            AddDialog(new TextPrompt(nameof(TextPrompt)));
+            AddDialog(new TextPrompt(nameof(TextPrompt), TextPromptValidatorAsync));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new DateResolverDialog());
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
@@ -50,6 +56,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+
         private async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             //PersonalDetails = (PersonalDetails)stepContext.Options;
@@ -64,8 +71,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 //luisResult = await MainDialog._luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
                 //string name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
                 //
-
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                //PromptValidator<int> nameValidator = 5; 
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = MessageFactory.Text("Retriyng... Name"), Validations = Validator.Name }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Name, cancellationToken);
@@ -75,19 +82,19 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             //PersonalDetails = (PersonalDetails)stepContext.Options;
 
-            if (PersonalDetails.Name == null)
-            {
-                luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
-                PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
-                //PersonalDetails.Name = (string)stepContext.Result;
-            }
+            //if (PersonalDetails.Name == null)
+            //{
+            //    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            //    PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
+            //    //PersonalDetails.Name = (string)stepContext.Result;
+            //}
 
             // Need to make int work as null
             if (PersonalDetails.Age == null)
             {
                 AgeStepMsgText = MainDialog.Response.AskAge();
                 var promptMessage = MessageFactory.Text(AgeStepMsgText, AgeStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = MessageFactory.Text("Retriyng... Age") }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Age, cancellationToken);
@@ -121,11 +128,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 SexStepMsgText = MainDialog.Response.AskSex();
                 var promptMessage = MessageFactory.Text(SexStepMsgText, SexStepMsgText, InputHints.ExpectingInput);
+                var retryPromptText = MessageFactory.Text($"Please choose one option.\n\n{SexStepMsgText}");
                 //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
                 var sexChoice = new List<Choice>() { new Choice("Male"), new Choice("Female") };
 
-                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice, RetryPrompt = retryPromptText }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Sex, cancellationToken);
@@ -176,6 +184,35 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             //return await stepContext.EndDialogAsync(null, cancellationToken);
         }
+
+
+
+
+
+        private async Task<bool> TextPromptValidatorAsync(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken)
+        {
+            //throw new NotImplementedException();
+
+            switch (promptContext.Options.Validations != null ? (Validator)promptContext.Options.Validations : (Validator)(-1))
+            {
+                case Validator.Name:
+                    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
+                    PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
+
+                    if (luisResult.Entities.personName == null)
+                        return await Task.FromResult(false);
+                    else
+                        return await Task.FromResult(true);
+
+                case Validator.Age:
+                    return await Task.FromResult(true);
+
+                default:
+                    return await Task.FromResult(true);
+            }
+        }
+
+
 
         //private static bool IsAmbiguous(string timex)
         //{
