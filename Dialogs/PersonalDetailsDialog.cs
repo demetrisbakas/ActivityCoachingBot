@@ -65,6 +65,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 NameStepMsgText = MainDialog.Response.AskName();
                 var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
+                var retryMessage = MessageFactory.Text(MainDialog.Response.RetryName(), InputHints.ExpectingInput);
 
                 //
                 //var temp = _luisRecognizer.IsConfigured;
@@ -72,7 +73,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 //string name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
                 //
                 //PromptValidator<int> nameValidator = 5; 
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = MessageFactory.Text("Retriyng... Name"), Validations = Validator.Name }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryMessage, Validations = Validator.Name }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Name, cancellationToken);
@@ -94,7 +95,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 AgeStepMsgText = MainDialog.Response.AskAge();
                 var promptMessage = MessageFactory.Text(AgeStepMsgText, AgeStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = MessageFactory.Text("Retriyng... Age") }, cancellationToken);
+                var retryMessage = MessageFactory.Text(MainDialog.Response.RetryAge(), InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryMessage, Validations = Validator.Age }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Age, cancellationToken);
@@ -105,11 +107,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //PersonalDetails= (PersonalDetails)stepContext.Options;
 
             //PersonalDetails.Age = Regex.Match((string)stepContext.Result, @"\d+").Value;
-            if (PersonalDetails.Age == null)
-            {
-                luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
-                PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match((string)stepContext.Result, @"\d+").Value);
-            }
+            //if (PersonalDetails.Age == null)
+            //{
+            //    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            //    PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match((string)stepContext.Result, @"\d+").Value);
+            //}
 
             //personalDetails.Age = (string)stepContext.Result;
 
@@ -199,13 +201,25 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
                     PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
 
-                    if (luisResult.Entities.personName == null)
+                    if (PersonalDetails.Name == null)
                         return await Task.FromResult(false);
                     else
                         return await Task.FromResult(true);
 
                 case Validator.Age:
-                    return await Task.FromResult(true);
+
+
+                    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
+                    //PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
+                    if (luisResult.Entities.age != null) 
+                        PersonalDetails.Age = luisResult.Entities.age[0].Number.ToString();
+                    else if (Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value != "")
+                        PersonalDetails.Age = Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value;
+
+                    if (PersonalDetails.Age == null)
+                        return await Task.FromResult(false);
+                    else
+                        return await Task.FromResult(true);
 
                 default:
                     return await Task.FromResult(true);
