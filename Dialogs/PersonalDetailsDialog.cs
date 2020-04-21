@@ -12,6 +12,7 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 
 //
 using Microsoft.Extensions.Configuration;
+using Microsoft.Bot.Connector.Authentication;
 //
 
 namespace Microsoft.BotBuilderSamples.Dialogs
@@ -22,11 +23,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         //static IConfiguration configuration;
         //private readonly FlightBookingRecognizer _luisRecognizer = new FlightBookingRecognizer(configuration);
         //
-        FlightBooking luisResult;
-
-        private string NameStepMsgText;
-        private string AgeStepMsgText;
-        private string SexStepMsgText;
+        private FlightBooking luisResult;
 
         private enum Validator
         {
@@ -63,9 +60,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (PersonalDetails.Name == null)
             {
-                NameStepMsgText = MainDialog.Response.AskName();
+                var NameStepMsgText = MainDialog.Response.AskName();
                 var promptMessage = MessageFactory.Text(NameStepMsgText, NameStepMsgText, InputHints.ExpectingInput);
-                var retryMessage = MessageFactory.Text(MainDialog.Response.RetryName(), InputHints.ExpectingInput);
+                var retryText = MainDialog.Response.RetryName();
+                var retryMessage = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
 
                 //
                 //var temp = _luisRecognizer.IsConfigured;
@@ -93,9 +91,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Need to make int work as null
             if (PersonalDetails.Age == null)
             {
-                AgeStepMsgText = MainDialog.Response.AskAge();
+                var AgeStepMsgText = MainDialog.Response.AskAge();
                 var promptMessage = MessageFactory.Text(AgeStepMsgText, AgeStepMsgText, InputHints.ExpectingInput);
-                var retryMessage = MessageFactory.Text(MainDialog.Response.RetryAge(), InputHints.ExpectingInput);
+                var retryText = MainDialog.Response.RetryAge();
+                var retryMessage = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryMessage, Validations = Validator.Age }, cancellationToken);
             }
 
@@ -128,9 +127,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Need to find a more suitable type
             if (PersonalDetails.Sex == null)
             {
-                SexStepMsgText = MainDialog.Response.AskSex();
+                var SexStepMsgText = MainDialog.Response.AskSex();
                 var promptMessage = MessageFactory.Text(SexStepMsgText, SexStepMsgText, InputHints.ExpectingInput);
-                var retryPromptText = MessageFactory.Text($"Please choose one option.\n\n{SexStepMsgText}");
+                var retryText = $"Please choose one option.\n\n{SexStepMsgText}";
+                var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
                 //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
                 var sexChoice = new List<Choice>() { new Choice("Male"), new Choice("Female") };
@@ -212,9 +212,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
                     //PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
                     if (luisResult.Entities.age != null) 
-                        PersonalDetails.Age = luisResult.Entities.age[0].Number.ToString();
+                        PersonalDetails.Age = (int?)luisResult.Entities.age[0].Number;
                     else if (Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value != "")
-                        PersonalDetails.Age = Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value;
+                        //PersonalDetails.Age = Int32.Parse(Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
+                        PersonalDetails.Age = Int32.TryParse(Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value, out var tempVal) ? tempVal : (int?)null;
 
                     if (PersonalDetails.Age == null)
                         return await Task.FromResult(false);

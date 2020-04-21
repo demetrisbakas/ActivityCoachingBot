@@ -105,7 +105,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     {
                         // Get destination and origin from the composite entities arrays.
                         Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null,
-                        Age = luisResult.Entities.age?[0].Number.ToString(),
+                        Age = (int?)luisResult.Entities.age?[0].Number,
                     };
 
                     // Greeting message
