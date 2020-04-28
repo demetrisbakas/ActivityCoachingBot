@@ -175,6 +175,14 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 // Wipe the personalDetails for testing purposes
                 //PersonalDetails = new PersonalDetails();
 
+
+                // Sand to DB
+                var changes = new Dictionary<string, object>();
+                {
+                    changes.Add(PersonalDetails.UserID, PersonalDetails);
+                }
+                await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+
                 return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
             }
             else
@@ -215,6 +223,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                         PersonalDetails.Age = (int?)luisResult.Entities.age[0].Number;
                     else if (Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value != "")
                         //PersonalDetails.Age = Int32.Parse(Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
+                        // Second check, just in case. Returns null if parse fails
                         PersonalDetails.Age = Int32.TryParse(Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value, out var tempVal) ? tempVal : (int?)null;
 
                     if (PersonalDetails.Age == null)
@@ -226,13 +235,5 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     return await Task.FromResult(true);
             }
         }
-
-
-
-        //private static bool IsAmbiguous(string timex)
-        //{
-        //    var timexProperty = new TimexProperty(timex);
-        //    return !timexProperty.Types.Contains(Constants.TimexTypes.Definite);
-        //}
     }
 }

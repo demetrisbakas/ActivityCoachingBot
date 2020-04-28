@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class MainDialog : ComponentDialog
     {
+        // CosmosDB Initialization
+        private const string cosmosServiceEndpoint = "https://activitycoachbot-cosmosdb-sql.documents.azure.com:443/";
+        private const string cosmosDBKey = "62Flv5AdBkoKQed8WixdZeZEWp6yhn1rptznPnYQb1Yt5jI8UgYnJ0pOQuJTTOVLHr9le5sMzaWUEAKmbXTF1w==";
+        private const string cosmosDBDatabaseName = "bot-cosmos-sql-db";
+        private const string cosmosDBConteinerId = "bot-storage";
         private static FlightBookingRecognizer _luisRecognizer;
+
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
         public static FlightBookingRecognizer Get_luisRecognizer()
         {
@@ -103,7 +110,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     // IMPORTANT Wipes the data of the user
                     PersonalDetailsDialog.PersonalDetails = new PersonalDetails()
                     {
-                        // Get destination and origin from the composite entities arrays.
+                        // Get name and age from the composite entities arrays.
                         Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null,
                         Age = (int?)luisResult.Entities.age?[0].Number,
                     };
@@ -195,5 +202,14 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var promptMessage = "What else can I do for you?";
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
         }
+
+        // Create Cosmos DB  Storage.  
+        public static readonly CosmosDbPartitionedStorage CosmosDBQuery = new CosmosDbPartitionedStorage(new CosmosDbPartitionedStorageOptions
+        {
+            AuthKey = cosmosDBKey,
+            ContainerId = cosmosDBConteinerId,
+            CosmosDbEndpoint = cosmosServiceEndpoint,
+            DatabaseId = cosmosDBDatabaseName,
+        });
     }
 }
