@@ -65,6 +65,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 return await stepContext.NextAsync(null, cancellationToken);
             }
 
+            // Fetch data from DB
+            var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+            if(cosmosDbResults.Values.FirstOrDefault() != null)
+                PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
+
             // Use the text provided in FinalStepAsync or the default if it is the first time.
             var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"\n\nGreet the bot to enter the personal details dialog.";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
@@ -108,12 +113,17 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 case FlightBooking.Intent.Greet:
                     // Deatails of the user
                     // IMPORTANT Wipes the data of the user
-                    PersonalDetailsDialog.PersonalDetails = new PersonalDetails()
-                    {
-                        // Get name and age from the composite entities arrays.
-                        Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null,
-                        Age = (int?)luisResult.Entities.age?[0].Number,
-                    };
+                    //PersonalDetailsDialog.PersonalDetails = new PersonalDetails()
+                    //{
+                    //    // Get name and age from the composite entities arrays.
+                    //    Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null,
+                    //    Age = (int?)luisResult.Entities.age?[0].Number,
+                    //};
+
+                    if (PersonalDetailsDialog.PersonalDetails.Name == null)
+                        PersonalDetailsDialog.PersonalDetails.Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null;
+                    if (PersonalDetailsDialog.PersonalDetails.Age == null)
+                        PersonalDetailsDialog.PersonalDetails.Age = (int?)luisResult.Entities.age?[0].Number;
 
                     // Greeting message
                     var greetText = (PersonalDetailsDialog.PersonalDetails.Name == null ? Response.Greet() : Response.Greet(PersonalDetailsDialog.PersonalDetails.Name));
