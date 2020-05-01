@@ -154,8 +154,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
             if (PersonalDetails.Sex == null)
-                //PersonalDetails.Sex = stepContext.Result.ToString();
-                PersonalDetails.Sex = char.ToUpper(stepContext.Context.Activity.Text[0]) + stepContext.Context.Activity.Text.Substring(1).ToLower();
+                PersonalDetails.Sex = ((FoundChoice)stepContext.Result).Value;
+
+                //    //PersonalDetails.Sex = stepContext.Result.ToString();
+                //    PersonalDetails.Sex = char.ToUpper(stepContext.Context.Activity.Text[0]) + stepContext.Context.Activity.Text.Substring(1).ToLower();
+
+                //var choice = (FoundChoice)stepContext.Result;
+                //PersonalDetails.Sex = choice.Value;
+
+            //var userProfile = (UserProfile)stepContext.Values[UserInfo];
+            //userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
 
 
             var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";

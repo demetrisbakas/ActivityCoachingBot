@@ -213,7 +213,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
         }
 
-        // Create Cosmos DB  Storage.  
+        // Create Cosmos DB Storage.  
         public static readonly CosmosDbPartitionedStorage CosmosDBQuery = new CosmosDbPartitionedStorage(new CosmosDbPartitionedStorageOptions
         {
             AuthKey = cosmosDBKey,
