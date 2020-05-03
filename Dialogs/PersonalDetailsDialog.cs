@@ -196,7 +196,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
             else
             {
-                PersonalDetails = new PersonalDetails();
+                //PersonalDetails = new PersonalDetails();
+                PersonalDetails.Name = PersonalDetails.Sex = null;
+                PersonalDetails.Age = null;
 
                 return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetails, cancellationToken);
             }

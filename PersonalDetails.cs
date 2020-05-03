@@ -17,6 +17,6 @@ namespace Microsoft.BotBuilderSamples
         public string Sex { get; set; }
 
         //public IDictionary<QuestionTopFive, string> QuestionnaireAnswers { get; set; } = new Dictionary<QuestionTopFive, string>();
-        public List<KeyValuePair<QuestionTopFive, string>> QuestionnaireAnswers { get; set; } = new List<KeyValuePair<QuestionTopFive, string>>();
+        public List<KeyValuePair<string, string>> QuestionnaireAnswers { get; set; } = new List<KeyValuePair<string, string>>();
     }
 }
