@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoreBot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,5 +15,8 @@ namespace Microsoft.BotBuilderSamples
         public int? Age { get; set; }
 
         public string Sex { get; set; }
+
+        //public IDictionary<QuestionTopFive, string> QuestionnaireAnswers { get; set; } = new Dictionary<QuestionTopFive, string>();
+        public List<KeyValuePair<QuestionTopFive, string>> QuestionnaireAnswers { get; set; } = new List<KeyValuePair<QuestionTopFive, string>>();
     }
 }

@@ -191,7 +191,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 }
                 await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
 
-                return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
+                //return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails.QuestionnaireAnswers, cancellationToken);
             }
             else
             {

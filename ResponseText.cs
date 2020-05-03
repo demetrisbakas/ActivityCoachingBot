@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoreBot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,6 +19,16 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> ageRetryList = new List<string>() { "Can you please tell me your age again?", "I didn't get you age, can you try again?" };
         private readonly List<string> sexQuestionList = new List<string>() { "What is your sex?", "Are you a male or a female?" };
 
+        public List<QuestionTopFive> questionnaire = new List<QuestionTopFive>();
+
+
+        public ResponseText()
+        {
+            // Publicate questionnaire
+            questionnaire.Add(new QuestionTopFive("Is talkative"));
+            questionnaire.Add(new QuestionTopFive("Does a thorough job"));
+            questionnaire.Add(new QuestionTopFive("Is depressed, blue"));
+        }
 
         private string RandomiseList(List<string> inputList)
         {

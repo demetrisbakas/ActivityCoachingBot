@@ -40,6 +40,9 @@ namespace Microsoft.BotBuilderSamples
             // Register the PersonalDetailsDialog.
             services.AddSingleton<PersonalDetailsDialog>();
 
+            // Register the TopFiveDialog.
+            services.AddSingleton<TopFiveDialog>();
+
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
 
