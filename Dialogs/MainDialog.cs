@@ -67,9 +67,19 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
 
             // Fetch data from DB
-            var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
-            if(cosmosDbResults.Values.FirstOrDefault() != null)
-                PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
+            try
+            {
+                var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                if (cosmosDbResults.Values.FirstOrDefault() != null)
+                    PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
+                else
+                    // Wiping user data since new user is detected
+                    PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+            }
 
             // Use the text provided in FinalStepAsync or the default if it is the first time.
             var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"\n\nGreet the bot to enter the personal details dialog.";

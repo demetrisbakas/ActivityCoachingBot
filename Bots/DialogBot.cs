@@ -7,6 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Microsoft.BotBuilderSamples.Dialogs;
 
 namespace Microsoft.BotBuilderSamples.Bots
 {
@@ -33,13 +34,11 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
-            //
             //var userName = turnContext.Activity.From.Name;
             //var userID = turnContext.Activity.From.Id;
             //await turnContext.SendActivityAsync($"Welcome - {userName}, {userID}");
-            if (Dialogs.PersonalDetailsDialog.PersonalDetails.UserID == null)
-                Dialogs.PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
-            //
+            if (PersonalDetailsDialog.PersonalDetails.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
+                PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
 
             await base.OnTurnAsync(turnContext, cancellationToken);
 

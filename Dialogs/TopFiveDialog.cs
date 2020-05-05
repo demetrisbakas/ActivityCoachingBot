@@ -32,13 +32,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> AskQuestionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            //foreach (QuestionTopFive obj in MainDialog.Response.questionnaire)
-            //{
-            //    if (!PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.ContainsKey(obj))
-
             foreach (QuestionTopFive obj in MainDialog.Response.questionnaire)
             {
-                if (!PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Any(l => l.Key == obj.Question))
+                if (!PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.ContainsKey(obj.Question))
                 {
                     activeQuestion = obj.Question;
                     var question = $"I see Myself as Someone Who\n\n{activeQuestion}";
@@ -60,16 +56,23 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (finished)
             {
                 // Sand to DB
-                var changes = new Dictionary<string, object>();
+                var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
+                try
                 {
-                    changes.Add(PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails);
+                    await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
                 }
-                await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                catch (Exception e)
+                {
+                    await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+                }
+                // Resseting the flag, in case new user comes
+                finished = false;
                 return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
             }
             else
             {
-                PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(new KeyValuePair<string, string>(activeQuestion, ((FoundChoice)stepContext.Result).Value));
+                //PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(new KeyValuePair<string, string>(activeQuestion, ((FoundChoice)stepContext.Result).Value));
+                PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(activeQuestion, ((FoundChoice)stepContext.Result).Value);
                 return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
             }
         }

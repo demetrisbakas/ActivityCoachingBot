@@ -185,11 +185,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
                 // Sand to DB
-                var changes = new Dictionary<string, object>();
+                var changes = new Dictionary<string, object>() { { PersonalDetails.UserID, PersonalDetails } };
+                try
                 {
-                    changes.Add(PersonalDetails.UserID, PersonalDetails);
+                    await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
                 }
-                await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                catch (Exception e)
+                {
+                    await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+                }
 
                 //return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails.QuestionnaireAnswers, cancellationToken);
