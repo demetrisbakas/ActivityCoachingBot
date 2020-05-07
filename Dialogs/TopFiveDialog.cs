@@ -48,7 +48,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
 
             finished = true;
-            return await stepContext.NextAsync(PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
+            return await stepContext.NextAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -65,15 +65,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 {
                     await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
                 }
+
                 // Resseting the flag, in case new user comes
                 finished = false;
-                return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
+                return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
             else
             {
                 //PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(new KeyValuePair<string, string>(activeQuestion, ((FoundChoice)stepContext.Result).Value));
                 PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(activeQuestion, ((FoundChoice)stepContext.Result).Value);
-                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
         }
     }

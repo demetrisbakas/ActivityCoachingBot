@@ -24,6 +24,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         //private readonly FlightBookingRecognizer _luisRecognizer = new FlightBookingRecognizer(configuration);
         //
         private FlightBooking luisResult;
+        private bool finished = false;
 
         private enum Validator
         {
@@ -57,6 +58,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             //PersonalDetails = (PersonalDetails)stepContext.Options;
+
+            // Skip questions if already collected the data
+            if (PersonalDetails.Name != null && PersonalDetails.Age != null && PersonalDetails.Sex != null)
+                finished = true;
 
             if (PersonalDetails.Name == null)
             {
@@ -169,12 +174,22 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
-            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            if (!finished)
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            else
+            {
+                return await stepContext.NextAsync(PersonalDetails, cancellationToken);
+            }
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if ((bool)stepContext.Result)
+            if (finished)
+            {
+                finished = false;
+                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails, cancellationToken);
+            }
+            else if ((bool)stepContext.Result)
             {
                 //var personalDetails = (PersonalDetails)stepContext.Options;
 
@@ -189,6 +204,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 try
                 {
                     await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                    finished = false;
                 }
                 catch (Exception e)
                 {
@@ -196,7 +212,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 }
 
                 //return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
-                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails.QuestionnaireAnswers, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails, cancellationToken);
             }
             else
             {
