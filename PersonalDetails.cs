@@ -19,6 +19,6 @@ namespace Microsoft.BotBuilderSamples
         public IDictionary<string, int> QuestionnaireAnswers { get; set; } = new Dictionary<string, int>();
         //public List<KeyValuePair<string, string>> QuestionnaireAnswers { get; set; } = new List<KeyValuePair<string, string>>();
 
-        public int? extraversion, agreeableness, conscientiousness, neuroticism, openness;
+        public double? extraversion, agreeableness, conscientiousness, neuroticism, openness;
     }
 }

@@ -108,12 +108,18 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                             break;
                     }
                 }
-
-                PersonalDetailsDialog.PersonalDetails.extraversion = extraversion.Sum() / extraversion.Count();
-                PersonalDetailsDialog.PersonalDetails.agreeableness = agreeableness.Sum() / agreeableness.Count();
-                PersonalDetailsDialog.PersonalDetails.conscientiousness = conscientiousness.Sum() / conscientiousness.Count();
-                PersonalDetailsDialog.PersonalDetails.neuroticism = neuroticism.Sum() / neuroticism.Count();
-                PersonalDetailsDialog.PersonalDetails.openness = openness.Sum() / openness.Count();
             }
+
+            if (extraversion.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.extraversion = extraversion.Sum() / extraversion.Count();
+            if (agreeableness.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.agreeableness = agreeableness.Sum() / agreeableness.Count();
+            if (conscientiousness.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.conscientiousness = conscientiousness.Sum() / conscientiousness.Count();
+            if (neuroticism.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.neuroticism = neuroticism.Sum() / neuroticism.Count();
+            if (openness.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.openness = openness.Sum() / openness.Count();
+        }
     }
 }
