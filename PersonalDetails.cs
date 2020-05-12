@@ -16,7 +16,9 @@ namespace Microsoft.BotBuilderSamples
 
         public string Sex { get; set; }
 
-        public IDictionary<string, string> QuestionnaireAnswers { get; set; } = new Dictionary<string, string>();
+        public IDictionary<string, int> QuestionnaireAnswers { get; set; } = new Dictionary<string, int>();
         //public List<KeyValuePair<string, string>> QuestionnaireAnswers { get; set; } = new List<KeyValuePair<string, string>>();
+
+        public int? extraversion, agreeableness, conscientiousness, neuroticism, openness;
     }
 }

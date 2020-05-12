@@ -55,6 +55,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             if (finished)
             {
+                CalculatePersonalityTraits(MainDialog.Response.questionnaire, PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers);
+
                 // Sand to DB
                 var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
                 try
@@ -73,9 +75,45 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             else
             {
                 //PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(new KeyValuePair<string, string>(activeQuestion, ((FoundChoice)stepContext.Result).Value));
-                PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(activeQuestion, ((FoundChoice)stepContext.Result).Value);
+                // Adding 1 to the answers index because it starts from 0
+                PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(activeQuestion, ++((FoundChoice)stepContext.Result).Index);
                 return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
         }
+
+        private void CalculatePersonalityTraits(List<QuestionTopFive> questionnaire, IDictionary<string, int> QuestionnaireAnswers)
+        {
+            List<int> extraversion = new List<int>(), agreeableness = new List<int>(), conscientiousness = new List<int>(), neuroticism = new List<int>(), openness = new List<int>();
+
+            foreach (QuestionTopFive obj in questionnaire)
+            {
+                if (QuestionnaireAnswers.ContainsKey(obj.Question))
+                {
+                    switch (obj.personalityTrait)
+                    {
+                        case QuestionTopFive.PersonalityTrait.Extraversion:
+                            extraversion.Add(QuestionnaireAnswers[obj.Question]);
+                            break;
+                        case QuestionTopFive.PersonalityTrait.Agreeableness:
+                            agreeableness.Add(QuestionnaireAnswers[obj.Question]);
+                            break;
+                        case QuestionTopFive.PersonalityTrait.Conscientiousness:
+                            conscientiousness.Add(QuestionnaireAnswers[obj.Question]);
+                            break;
+                        case QuestionTopFive.PersonalityTrait.Neuroticism:
+                            neuroticism.Add(QuestionnaireAnswers[obj.Question]);
+                            break;
+                        case QuestionTopFive.PersonalityTrait.Openness:
+                            openness.Add(QuestionnaireAnswers[obj.Question]);
+                            break;
+                    }
+                }
+
+                PersonalDetailsDialog.PersonalDetails.extraversion = extraversion.Sum() / extraversion.Count();
+                PersonalDetailsDialog.PersonalDetails.agreeableness = agreeableness.Sum() / agreeableness.Count();
+                PersonalDetailsDialog.PersonalDetails.conscientiousness = conscientiousness.Sum() / conscientiousness.Count();
+                PersonalDetailsDialog.PersonalDetails.neuroticism = neuroticism.Sum() / neuroticism.Count();
+                PersonalDetailsDialog.PersonalDetails.openness = openness.Sum() / openness.Count();
+            }
     }
 }

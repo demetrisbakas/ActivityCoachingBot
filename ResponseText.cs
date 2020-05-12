@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static CoreBot.QuestionTopFive.PersonalityTrait;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -25,9 +26,9 @@ namespace Microsoft.BotBuilderSamples
         public ResponseText()
         {
             // Publicate questionnaire
-            questionnaire.Add(new QuestionTopFive("Is talkative"));
-            questionnaire.Add(new QuestionTopFive("Does a thorough job"));
-            questionnaire.Add(new QuestionTopFive("Is depressed, blue"));
+            questionnaire.Add(new QuestionTopFive("Is talkative", Agreeableness));
+            questionnaire.Add(new QuestionTopFive("Does a thorough job", Conscientiousness));
+            questionnaire.Add(new QuestionTopFive("Is depressed, blue", Openness));
         }
 
         private string RandomiseList(List<string> inputList)
