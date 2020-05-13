@@ -360,3 +360,4 @@ obj/**
 bin/**
 runtimes/**
 appsettings.json
+ActivityCoachingBot.bot

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static CoreBot.QuestionTopFive.PersonalityTrait;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
@@ -83,7 +84,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private void CalculatePersonalityTraits(List<QuestionTopFive> questionnaire, IDictionary<string, int> QuestionnaireAnswers)
         {
-            List<int> extraversion = new List<int>(), agreeableness = new List<int>(), conscientiousness = new List<int>(), neuroticism = new List<int>(), openness = new List<int>();
+            List<int> extraversionList = new List<int>(), agreeablenessList = new List<int>(), conscientiousnessList = new List<int>(), neuroticismList = new List<int>(), opennessList = new List<int>();
 
             foreach (QuestionTopFive obj in questionnaire)
             {
@@ -91,35 +92,35 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 {
                     switch (obj.personalityTrait)
                     {
-                        case QuestionTopFive.PersonalityTrait.Extraversion:
-                            extraversion.Add(QuestionnaireAnswers[obj.Question]);
+                        case Extraversion:
+                            extraversionList.Add(QuestionnaireAnswers[obj.Question]);
                             break;
-                        case QuestionTopFive.PersonalityTrait.Agreeableness:
-                            agreeableness.Add(QuestionnaireAnswers[obj.Question]);
+                        case Agreeableness:
+                            agreeablenessList.Add(QuestionnaireAnswers[obj.Question]);
                             break;
-                        case QuestionTopFive.PersonalityTrait.Conscientiousness:
-                            conscientiousness.Add(QuestionnaireAnswers[obj.Question]);
+                        case Conscientiousness:
+                            conscientiousnessList.Add(QuestionnaireAnswers[obj.Question]);
                             break;
-                        case QuestionTopFive.PersonalityTrait.Neuroticism:
-                            neuroticism.Add(QuestionnaireAnswers[obj.Question]);
+                        case Neuroticism:
+                            neuroticismList.Add(QuestionnaireAnswers[obj.Question]);
                             break;
-                        case QuestionTopFive.PersonalityTrait.Openness:
-                            openness.Add(QuestionnaireAnswers[obj.Question]);
+                        case Openness:
+                            opennessList.Add(QuestionnaireAnswers[obj.Question]);
                             break;
                     }
                 }
             }
 
-            if (extraversion.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.extraversion = extraversion.Sum() / extraversion.Count();
-            if (agreeableness.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.agreeableness = agreeableness.Sum() / agreeableness.Count();
-            if (conscientiousness.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.conscientiousness = conscientiousness.Sum() / conscientiousness.Count();
-            if (neuroticism.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.neuroticism = neuroticism.Sum() / neuroticism.Count();
-            if (openness.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.openness = openness.Sum() / openness.Count();
+            if (extraversionList.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.Extraversion = extraversionList.Average();
+            if (agreeablenessList.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.Agreeableness = agreeablenessList.Average();
+            if (conscientiousnessList.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.Conscientiousness = conscientiousnessList.Average();
+            if (neuroticismList.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.Neuroticism = neuroticismList.Average();
+            if (opennessList.Count() > 0)
+                PersonalDetailsDialog.PersonalDetails.Openness = opennessList.Average();
         }
     }
 }
