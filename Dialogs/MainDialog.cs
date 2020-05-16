@@ -161,23 +161,24 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                     // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
-                    //return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
+                //return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
 
 
 
                 default:
-
-                    // TEST
-                    var test2 = await _luisRecognizer.SampleQnA.GetAnswersAsync(stepContext.Context);
-                    //
-
-
-
                     // Catch all for unhandled intents
-                    var didntUnderstandMessageText = test2?[0].Answer;
-                    //var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
-                    var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
+                    // Try to find an answer on the knowledge base
+                    var knowledgeBaseResult = await _luisRecognizer.SampleQnA.GetAnswersAsync(stepContext.Context);
+
+                    if (knowledgeBaseResult?.FirstOrDefault() != null)
+                        return await stepContext.ReplaceDialogAsync(InitialDialogId, knowledgeBaseResult[0].Answer, cancellationToken);
+                    else
+                    {
+                        // If it's not on the knowledge base, return error message
+                        var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
+                        var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+                        await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
+                    }
                     break;
             }
 

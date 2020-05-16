@@ -35,17 +35,12 @@ namespace Microsoft.BotBuilderSamples
             }
 
 
-
-
-
-            // TEST
             SampleQnA = new QnAMaker(new QnAMakerEndpoint
             {
-                KnowledgeBaseId = QnAKnowledgebaseId, //configuration[QnAKnowledgebaseId],
-                EndpointKey = QnAEndpointKey, //configuration[QnAEndpointKey],
-                Host = QnAEndpointHostName //configuration[QnAEndpointHostName]
+                KnowledgeBaseId = QnAKnowledgebaseId,
+                EndpointKey = QnAEndpointKey,
+                Host = QnAEndpointHostName
             });
-            //
         }
 
         // Returns true if luis is configured in the appsettings.json and initialized.
@@ -57,12 +52,6 @@ namespace Microsoft.BotBuilderSamples
         public virtual async Task<T> RecognizeAsync<T>(ITurnContext turnContext, CancellationToken cancellationToken)
             where T : IRecognizerConvert, new()
             => await _recognizer.RecognizeAsync<T>(turnContext, cancellationToken);
-
-
-
-
-
-
 
 
         public QnAMaker SampleQnA { get; private set; }
