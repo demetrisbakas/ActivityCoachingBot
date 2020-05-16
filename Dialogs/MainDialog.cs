@@ -166,8 +166,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
                 default:
+
+                    // TEST
+                    var test2 = await _luisRecognizer.SampleQnA.GetAnswersAsync(stepContext.Context);
+                    //
+
+
+
                     // Catch all for unhandled intents
-                    var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
+                    var didntUnderstandMessageText = test2?[0].Answer;
+                    //var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
                     var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
                     break;
