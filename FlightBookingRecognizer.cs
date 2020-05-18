@@ -31,7 +31,15 @@ namespace Microsoft.BotBuilderSamples
                     configuration["LuisAPIKey"],
                     "https://" + configuration["LuisAPIHostName"]);
 
-                _recognizer = new LuisRecognizer(luisApplication);
+                var recognizerOptions = new LuisRecognizerOptionsV3(luisApplication)
+                {
+                    PredictionOptions = new Bot.Builder.AI.LuisV3.LuisPredictionOptions
+                    {
+                        IncludeInstanceData = true,
+                    }
+                };
+
+                _recognizer = new LuisRecognizer(recognizerOptions);
             }
 
 
