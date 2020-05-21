@@ -43,6 +43,9 @@ namespace Microsoft.BotBuilderSamples
             // Register the TopFiveDialog.
             services.AddSingleton<TopFiveDialog>();
 
+            // Register the QuestionnaireChoiceDialog.
+            services.AddSingleton<QuestionnaireChoiceDialog>();
+
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
 

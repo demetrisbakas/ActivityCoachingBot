@@ -35,7 +35,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, ILogger<MainDialog> logger)
+        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -45,6 +45,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(bookingDialog);
             AddDialog(personalDetailsDialog);
             AddDialog(topFiveDialog);
+            AddDialog(questionnaireChoiceDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,

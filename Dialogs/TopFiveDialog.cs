@@ -14,7 +14,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class TopFiveDialog : CancelAndHelpDialog
     {
-        private bool finished = false;
+        private bool finished = false, finishedBefore = true;
         private string activeQuestion;
 
         public TopFiveDialog()
@@ -43,6 +43,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     var retryText = $"Please choose one option.\n\n{question}";
                     var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
                     var answerChoice = obj.Answers;
+                    finishedBefore = false;
 
                     return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = answerChoice, RetryPrompt = retryPromptText }, cancellationToken);
                 }
@@ -54,6 +55,14 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            // Send a message the this questionnaire has already been finished
+            if (finishedBefore)
+            {
+                var finishedText = MainDialog.Response.FinishedQuestionnaire();
+                var finishedTextMessage = MessageFactory.Text(finishedText, finishedText, InputHints.IgnoringInput);
+                await stepContext.Context.SendActivityAsync(finishedTextMessage, cancellationToken);
+            }
+
             if (finished)
             {
                 CalculatePersonalityTraits(MainDialog.Response.questionnaire, PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers);
@@ -62,6 +71,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 // Resseting the flag, in case new user comes
                 finished = false;
+                finishedBefore = true;
                 return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
             else

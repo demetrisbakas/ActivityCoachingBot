@@ -187,7 +187,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (finished)
             {
                 finished = false;
-                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(QuestionnaireChoiceDialog), PersonalDetails, cancellationToken);
             }
             else if ((bool)stepContext.Result)
             {
@@ -212,7 +212,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 }
 
                 //return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
-                return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetails, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(QuestionnaireChoiceDialog), PersonalDetails, cancellationToken);
             }
             else
             {
