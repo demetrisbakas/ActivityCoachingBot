@@ -78,27 +78,34 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private void CalculatePersonalityTraits(List<QuestionTopFive> questionnaire, IDictionary<string, int> QuestionnaireAnswers)
         {
             List<int> extraversionList = new List<int>(), agreeablenessList = new List<int>(), conscientiousnessList = new List<int>(), neuroticismList = new List<int>(), opennessList = new List<int>();
+            int score;
 
             foreach (QuestionTopFive obj in questionnaire)
             {
                 if (QuestionnaireAnswers.ContainsKey(obj.Question))
                 {
+                    if (obj.reverseLogic)
+                        // Adding 1 because Count() returns 5 and not 6
+                        score = obj.Answers.Count() + 1 - QuestionnaireAnswers[obj.Question];
+                    else
+                        score = QuestionnaireAnswers[obj.Question];
+
                     switch (obj.personalityTrait)
                     {
                         case Extraversion:
-                            extraversionList.Add(QuestionnaireAnswers[obj.Question]);
+                            extraversionList.Add(score);
                             break;
                         case Agreeableness:
-                            agreeablenessList.Add(QuestionnaireAnswers[obj.Question]);
+                            agreeablenessList.Add(score);
                             break;
                         case Conscientiousness:
-                            conscientiousnessList.Add(QuestionnaireAnswers[obj.Question]);
+                            conscientiousnessList.Add(score);
                             break;
                         case Neuroticism:
-                            neuroticismList.Add(QuestionnaireAnswers[obj.Question]);
+                            neuroticismList.Add(score);
                             break;
                         case Openness:
-                            opennessList.Add(QuestionnaireAnswers[obj.Question]);
+                            opennessList.Add(score);
                             break;
                     }
                 }

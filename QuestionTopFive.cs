@@ -21,6 +21,8 @@ namespace CoreBot
         };
         public PersonalityTrait personalityTrait;
 
+        public bool reverseLogic = false;
+
         public QuestionTopFive()
         {
         }
@@ -37,10 +39,36 @@ namespace CoreBot
             Answers.Add(new Choice("Very much"));
         }
 
+        public QuestionTopFive(string question, PersonalityTrait personalityTrait, bool reverseLogic)
+        {
+            Question = question;
+            this.personalityTrait = personalityTrait;
+            this.reverseLogic = reverseLogic;
+
+            Answers.Add(new Choice("Not at all"));
+            Answers.Add(new Choice("A little bit"));
+            Answers.Add(new Choice("Neutral"));
+            Answers.Add(new Choice("Much"));
+            Answers.Add(new Choice("Very much"));
+        }
+
         public QuestionTopFive(string question, PersonalityTrait personalityTrait, string answer1, string answer2, string answer3, string answer4, string answer5)
         {
             Question = question;
             this.personalityTrait = personalityTrait;
+
+            Answers.Add(new Choice(answer1));
+            Answers.Add(new Choice(answer2));
+            Answers.Add(new Choice(answer3));
+            Answers.Add(new Choice(answer4));
+            Answers.Add(new Choice(answer5));
+        }
+
+        public QuestionTopFive(string question, PersonalityTrait personalityTrait, string answer1, string answer2, string answer3, string answer4, string answer5, bool reverseLogic)
+        {
+            Question = question;
+            this.personalityTrait = personalityTrait;
+            this.reverseLogic = reverseLogic;
 
             Answers.Add(new Choice(answer1));
             Answers.Add(new Choice(answer2));

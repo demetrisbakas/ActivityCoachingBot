@@ -26,9 +26,9 @@ namespace Microsoft.BotBuilderSamples
         public ResponseText()
         {
             // Populate questionnaire
-            questionnaire.Add(new QuestionTopFive("Is talkative", Agreeableness));
-            questionnaire.Add(new QuestionTopFive("Does a thorough job", Conscientiousness));
-            questionnaire.Add(new QuestionTopFive("Is depressed, blue", Openness));
+            questionnaire.Add(new QuestionTopFive("Is talkative", Extraversion));
+            questionnaire.Add(new QuestionTopFive("Does a thorough job", Agreeableness, true));
+            questionnaire.Add(new QuestionTopFive("Is depressed, blue", Conscientiousness));
         }
 
         private string RandomiseList(List<string> inputList)
