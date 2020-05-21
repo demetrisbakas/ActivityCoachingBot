@@ -203,7 +203,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 var changes = new Dictionary<string, object>() { { PersonalDetails.UserID, PersonalDetails } };
                 try
                 {
-                    await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                    MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
                     finished = false;
                 }
                 catch (Exception e)

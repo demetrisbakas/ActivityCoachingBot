@@ -58,16 +58,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 CalculatePersonalityTraits(MainDialog.Response.questionnaire, PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers);
 
-                // Sand to DB
-                var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
-                try
-                {
-                    await MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
-                }
-                catch (Exception e)
-                {
-                    await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
-                }
+                WriteToDB(stepContext, cancellationToken);
 
                 // Resseting the flag, in case new user comes
                 finished = false;
@@ -78,6 +69,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 //PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(new KeyValuePair<string, string>(activeQuestion, ((FoundChoice)stepContext.Result).Value));
                 // Adding 1 to the answers index because it starts from 0
                 PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(activeQuestion, ++((FoundChoice)stepContext.Result).Index);
+                WriteToDB(stepContext, cancellationToken);
+
                 return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
         }
@@ -121,6 +114,20 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 PersonalDetailsDialog.PersonalDetails.Neuroticism = neuroticismList.Average();
             if (opennessList.Count() > 0)
                 PersonalDetailsDialog.PersonalDetails.Openness = opennessList.Average();
+        }
+
+        private async void WriteToDB(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Sand to DB
+            var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
+            try
+            {
+                MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+            }
         }
     }
 }
