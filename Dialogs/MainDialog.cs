@@ -23,6 +23,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private const string cosmosDBDatabaseName = "bot-cosmos-sql-db";
         private const string cosmosDBConteinerId = "bot-storage";
         private static FlightBookingRecognizer _luisRecognizer;
+        public static Task<IDictionary<string, object>> ReadFromDb;
 
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
         public static FlightBookingRecognizer Get_luisRecognizer()
@@ -75,11 +76,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-
             // Fetch data from DB
             try
             {
-                var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                //var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                var cosmosDbResults = await ReadFromDb;
                 if (cosmosDbResults.Values.FirstOrDefault() != null)
                     PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
                 else

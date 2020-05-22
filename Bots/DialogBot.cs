@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.BotBuilderSamples.Dialogs;
+using System.Collections.Generic;
 
 namespace Microsoft.BotBuilderSamples.Bots
 {
@@ -38,7 +39,10 @@ namespace Microsoft.BotBuilderSamples.Bots
             //var userID = turnContext.Activity.From.Id;
             //await turnContext.SendActivityAsync($"Welcome - {userName}, {userID}");
             if (PersonalDetailsDialog.PersonalDetails.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
+            {
                 PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
+                MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+            }
 
             await base.OnTurnAsync(turnContext, cancellationToken);
 
