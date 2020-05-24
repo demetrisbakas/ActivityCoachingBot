@@ -41,7 +41,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             if (PersonalDetailsDialog.PersonalDetails.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
             {
                 PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
-                MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                //MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
             }
 
             await base.OnTurnAsync(turnContext, cancellationToken);

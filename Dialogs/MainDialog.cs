@@ -79,8 +79,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Fetch data from DB
             try
             {
-                //var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
-                var cosmosDbResults = await ReadFromDb;
+                var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                //var cosmosDbResults = await ReadFromDb;
                 if (cosmosDbResults.Values.FirstOrDefault() != null)
                     PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
                 else
