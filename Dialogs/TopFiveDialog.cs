@@ -69,6 +69,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 WriteToDB(stepContext, cancellationToken);
 
+                // Show results
+                var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\n";
+                var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
+                await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
+
                 // Resseting the flag, in case new user comes
                 finished = false;
                 finishedBefore = true;
