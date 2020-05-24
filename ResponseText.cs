@@ -22,6 +22,8 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
 
+
+        public IDictionary<string, List<QuestionTopFive>> Questionnaires { get; set; } = new Dictionary<string, List<QuestionTopFive>>();
         public List<QuestionTopFive> questionnaire = new List<QuestionTopFive>();
 
 
@@ -31,6 +33,8 @@ namespace Microsoft.BotBuilderSamples
             questionnaire.Add(new QuestionTopFive("Is talkative", Extraversion));
             questionnaire.Add(new QuestionTopFive("Does a thorough job", Agreeableness, true));
             questionnaire.Add(new QuestionTopFive("Is depressed, blue", Conscientiousness));
+
+            Questionnaires.Add("Big Five", questionnaire);
         }
 
         private string RandomiseList(List<string> inputList)

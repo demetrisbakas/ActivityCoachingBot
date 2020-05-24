@@ -33,7 +33,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> AskQuestionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            foreach (QuestionTopFive obj in MainDialog.Response.questionnaire)
+            foreach (QuestionTopFive obj in QuestionnaireChoiceDialog.activeQuestionnaire /*MainDialog.Response.questionnaire*/)
             {
                 if (!PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.ContainsKey(obj.Question))
                 {
@@ -65,7 +65,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (finished)
             {
-                CalculatePersonalityTraits(MainDialog.Response.questionnaire, PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers);
+                CalculatePersonalityTraits();
 
                 WriteToDB(stepContext, cancellationToken);
 
@@ -85,38 +85,44 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
-        private void CalculatePersonalityTraits(List<QuestionTopFive> questionnaire, IDictionary<string, int> QuestionnaireAnswers)
+        private void CalculatePersonalityTraits()
         {
             List<int> extraversionList = new List<int>(), agreeablenessList = new List<int>(), conscientiousnessList = new List<int>(), neuroticismList = new List<int>(), opennessList = new List<int>();
             int score;
 
-            foreach (QuestionTopFive obj in questionnaire)
+            var questionnairesNames = MainDialog.Response.Questionnaires.Keys.ToList();
+            foreach (string name in questionnairesNames)
             {
-                if (QuestionnaireAnswers.ContainsKey(obj.Question))
-                {
-                    if (obj.reverseLogic)
-                        // Adding 1 because Count() returns 5 and not 6
-                        score = obj.Answers.Count() + 1 - QuestionnaireAnswers[obj.Question];
-                    else
-                        score = QuestionnaireAnswers[obj.Question];
+                List<QuestionTopFive> questionnaire = MainDialog.Response.Questionnaires[name];
 
-                    switch (obj.personalityTrait)
+                foreach (QuestionTopFive obj in questionnaire)
+                {
+                    if (PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.ContainsKey(obj.Question))
                     {
-                        case Extraversion:
-                            extraversionList.Add(score);
-                            break;
-                        case Agreeableness:
-                            agreeablenessList.Add(score);
-                            break;
-                        case Conscientiousness:
-                            conscientiousnessList.Add(score);
-                            break;
-                        case Neuroticism:
-                            neuroticismList.Add(score);
-                            break;
-                        case Openness:
-                            opennessList.Add(score);
-                            break;
+                        if (obj.reverseLogic)
+                            // Adding 1 because Count() returns 5 and not 6
+                            score = obj.Answers.Count() + 1 - PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers[obj.Question];
+                        else
+                            score = PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers[obj.Question];
+
+                        switch (obj.personalityTrait)
+                        {
+                            case Extraversion:
+                                extraversionList.Add(score);
+                                break;
+                            case Agreeableness:
+                                agreeablenessList.Add(score);
+                                break;
+                            case Conscientiousness:
+                                conscientiousnessList.Add(score);
+                                break;
+                            case Neuroticism:
+                                neuroticismList.Add(score);
+                                break;
+                            case Openness:
+                                opennessList.Add(score);
+                                break;
+                        }
                     }
                 }
             }

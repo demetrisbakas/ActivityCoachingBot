@@ -13,6 +13,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class QuestionnaireChoiceDialog : CancelAndHelpDialog
     {
+        public static List<QuestionTopFive> activeQuestionnaire { get; set; }
+
         public QuestionnaireChoiceDialog()
            : base(nameof(QuestionnaireChoiceDialog))
         {
@@ -35,21 +37,30 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
             //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
-            var questionnaireChoice = new List<Choice>() { new Choice("Big Five") };
+            var questionnaireChoice = new List<Choice>();
+            var questionnairesNames = MainDialog.Response.Questionnaires.Keys.ToList();
+            foreach (string name in questionnairesNames)
+            {
+                questionnaireChoice.Add(new Choice(name));
+            }
 
             return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = questionnaireChoice, RetryPrompt = retryPromptText }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            switch (((FoundChoice)stepContext.Result).Index)
-            {
-                case 0:
-                    return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+            activeQuestionnaire = MainDialog.Response.Questionnaires[stepContext.Context.Activity.Text];
 
-                default:
-                    return await stepContext.EndDialogAsync(null, cancellationToken);
-            }
+            return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+
+            //switch (((FoundChoice)stepContext.Result).Index)
+            //{
+            //    case 0:
+            //        return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+
+            //    default:
+            //        return await stepContext.EndDialogAsync(null, cancellationToken);
+            //}
         }
     }
 }
