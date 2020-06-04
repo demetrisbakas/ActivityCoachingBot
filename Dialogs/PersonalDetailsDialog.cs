@@ -19,6 +19,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class PersonalDetailsDialog : CancelAndHelpDialog
     {
+        public static PersonalDetails PersonalDetails { get; set; } = new PersonalDetails();
         //
         //static IConfiguration configuration;
         //private readonly FlightBookingRecognizer _luisRecognizer = new FlightBookingRecognizer(configuration);
@@ -32,15 +33,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             Age
         };
 
-        public static PersonalDetails PersonalDetails { get; set; } = new PersonalDetails();
-
         public PersonalDetailsDialog()
             : base(nameof(PersonalDetailsDialog))
         {
             AddDialog(new TextPrompt(nameof(TextPrompt), TextPromptValidatorAsync));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new DateResolverDialog());
-            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)/*, ChoicePromptValidatorAsync*/));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 NameStepAsync,
@@ -140,7 +139,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 var sexChoice = new List<Choice>() { new Choice("Male"), new Choice("Female") };
 
-                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice, RetryPrompt = retryPromptText }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice, RetryPrompt = retryPromptText, }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Sex, cancellationToken);
@@ -161,11 +160,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (PersonalDetails.Sex == null)
                 PersonalDetails.Sex = ((FoundChoice)stepContext.Result).Value;
 
-                //    //PersonalDetails.Sex = stepContext.Result.ToString();
-                //    PersonalDetails.Sex = char.ToUpper(stepContext.Context.Activity.Text[0]) + stepContext.Context.Activity.Text.Substring(1).ToLower();
+            //    //PersonalDetails.Sex = stepContext.Result.ToString();
+            //    PersonalDetails.Sex = char.ToUpper(stepContext.Context.Activity.Text[0]) + stepContext.Context.Activity.Text.Substring(1).ToLower();
 
-                //var choice = (FoundChoice)stepContext.Result;
-                //PersonalDetails.Sex = choice.Value;
+            //var choice = (FoundChoice)stepContext.Result;
+            //PersonalDetails.Sex = choice.Value;
 
             //var userProfile = (UserProfile)stepContext.Values[UserInfo];
             //userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
@@ -250,7 +249,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                     luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
                     //PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
-                    if (luisResult.Entities.age != null) 
+                    if (luisResult.Entities.age != null)
                         PersonalDetails.Age = (int?)luisResult.Entities.age[0].Number;
                     else if (Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value != "")
                         //PersonalDetails.Age = Int32.Parse(Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
@@ -266,5 +265,24 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     return await Task.FromResult(true);
             }
         }
+
+        //private async Task<bool> ChoicePromptValidatorAsync(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)
+        //{
+        //    foreach (Choice obj in promptContext.Options.Choices)
+        //    {
+        //        if (obj.Value.ToLower() == promptContext.Context.Activity.Text.ToLower())
+        //            return await Task.FromResult(true);
+        //    }
+
+
+        //    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
+        //    //if (luisResult.TopIntent().intent == FlightBooking.Intent.Cancel)
+        //        //    await stepContext1.EndDialogAsync(PersonalDetails, cancellationToken);
+
+
+        //        //await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
+
+        //        return await Task.FromResult(false);
+        //}
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -44,11 +45,19 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                         await innerDc.Context.SendActivityAsync(helpMessage, cancellationToken);
                         return new DialogTurnResult(DialogTurnStatus.Waiting);
 
+                    case "exit":
                     case "cancel":
                     case "quit":
                         var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
                         await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
                         return await innerDc.CancelAllDialogsAsync(cancellationToken);
+                }
+
+                if (Regex.IsMatch(text, "exit", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "cancel", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "quit", RegexOptions.IgnoreCase))
+                {
+                    var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
+                    await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
+                    return await innerDc.CancelAllDialogsAsync(cancellationToken);
                 }
             }
 
