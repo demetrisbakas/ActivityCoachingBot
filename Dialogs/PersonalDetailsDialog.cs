@@ -13,6 +13,8 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 //
 using Microsoft.Extensions.Configuration;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 //
 
 namespace Microsoft.BotBuilderSamples.Dialogs
@@ -92,7 +94,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //    //PersonalDetails.Name = (string)stepContext.Result;
             //}
 
-            // Need to make int work as null
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
+
             if (PersonalDetails.Age == null)
             {
                 var AgeStepMsgText = MainDialog.Response.AskAge();
@@ -128,7 +132,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //    return await stepContext.ReplaceDialogAsync(nameof(PersonalDetailsDialog.AgeStepAsync), PersonalDetails, cancellationToken);
             //}
 
-            // Need to find a more suitable type
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
+
             if (PersonalDetails.Sex == null)
             {
                 var SexStepMsgText = MainDialog.Response.AskSex();
@@ -169,6 +175,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //var userProfile = (UserProfile)stepContext.Values[UserInfo];
             //userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
 
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
 
             var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
@@ -199,16 +207,17 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
                 // Sand to DB
-                var changes = new Dictionary<string, object>() { { PersonalDetails.UserID, PersonalDetails } };
-                try
-                {
-                    MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
-                    finished = false;
-                }
-                catch (Exception e)
-                {
-                    await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
-                }
+                MainDialog.WriteToDB(stepContext, cancellationToken);
+                //var changes = new Dictionary<string, object>() { { PersonalDetails.UserID, PersonalDetails } };
+                //try
+                //{
+                //    MainDialog.CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                //    finished = false;
+                //}
+                //catch (Exception e)
+                //{
+                //    await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+                //}
 
                 //return await stepContext.EndDialogAsync(PersonalDetails, cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(QuestionnaireChoiceDialog), PersonalDetails, cancellationToken);
@@ -265,6 +274,56 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     return await Task.FromResult(true);
             }
         }
+
+        //public async Task ClusteringAsync()
+        //{
+        //    var mlContext = new MLContext();
+
+
+        //    DatabaseLoader loader = mlContext.Data.CreateDatabaseLoader<PersonalDetails>();
+
+
+
+
+        //    var cosmosDbResults = await MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID });
+        //    //var cosmosDbResults = await ReadFromDb;
+        //    if (cosmosDbResults.Values.FirstOrDefault() != null)
+        //        PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
+
+        //    DatabaseSource dbSource = new DatabaseSource(SqlClientFactory.Instance, connectionString, sqlCommand);
+
+        //    IDataView data = loader.Load();
+
+        //    // read the iris flower data from a text file
+        //    var trainingData = mlContext.Data.CreateDatabaseLoader();
+        //}
+
+        //public void Clustering()
+        //{
+        //    //Step 1. Create a ML Context
+        //    var ctx = new MLContext();
+
+        //    //Step 2. Read in the input data for model training
+        //    IDataView dataReader = ctx.Data
+        //        .LoadFromTextFile<MyInput>(dataPath, hasHeader: true);
+
+        //    //Step 3. Build your estimator
+        //    IEstimator<ITransformer> est = ctx.Transforms.Text
+        //        .FeaturizeText("Features", nameof(SentimentIssue.Text))
+        //        .Append(ctx.BinaryClassification.Trainers
+        //            .LbfgsLogisticRegression("Label", "Features"));
+
+        //    //Step 4. Train your Model
+        //    ITransformer trainedModel = est.Fit(dataReader);
+
+        //    //Step 5. Make predictions using your model
+        //    var predictionEngine = ctx.Model
+        //        .CreatePredictionEngine<MyInput, MyOutput>(trainedModel);
+
+        //    var sampleStatement = new MyInput { Text = "This is a horrible movie" };
+
+        //    var prediction = predictionEngine.Predict(sampleStatement);
+        //}
 
         //private async Task<bool> ChoicePromptValidatorAsync(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)
         //{

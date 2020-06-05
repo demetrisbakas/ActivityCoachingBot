@@ -38,10 +38,13 @@ namespace Microsoft.BotBuilderSamples.Bots
             //var userName = turnContext.Activity.From.Name;
             //var userID = turnContext.Activity.From.Id;
             //await turnContext.SendActivityAsync($"Welcome - {userName}, {userID}");
-            if (PersonalDetailsDialog.PersonalDetails.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
+            if (PersonalDetailsDialog.PersonalDetails?.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
             {
+                //
+                PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
+                //
                 PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
-                //MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
             }
 
             await base.OnTurnAsync(turnContext, cancellationToken);

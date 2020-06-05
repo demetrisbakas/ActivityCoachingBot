@@ -79,13 +79,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Fetch data from DB
             try
             {
-                var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
-                //var cosmosDbResults = await ReadFromDb;
+                //var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                var cosmosDbResults = await ReadFromDb;
                 if (cosmosDbResults.Values.FirstOrDefault() != null)
                     PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
-                else
-                    // Wiping user data since new user is detected
-                    PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
+                //else
+                //    // Wiping user data since new user is detected
+                //    PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
             }
             catch (Exception e)
             {
@@ -245,5 +245,19 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             CosmosDbEndpoint = cosmosServiceEndpoint,
             DatabaseId = cosmosDBDatabaseName,
         });
+
+        public static async void WriteToDB(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Sand to DB
+            var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
+            try
+            {
+                CosmosDBQuery.WriteAsync(changes, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+            }
+        }
     }
 }
