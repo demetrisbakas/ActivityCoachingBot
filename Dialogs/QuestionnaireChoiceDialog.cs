@@ -44,7 +44,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 questionnaireChoice.Add(new Choice(name));
             }
 
-            return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = questionnaireChoice, RetryPrompt = retryPromptText, Style = ListStyle.SuggestedAction }, cancellationToken);
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = questionnaireChoice, RetryPrompt = retryPromptText, Style = ListStyle.HeroCard }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

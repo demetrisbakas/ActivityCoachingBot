@@ -45,7 +45,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     var answerChoice = obj.Answers;
                     finishedBefore = false;
 
-                    return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = answerChoice, RetryPrompt = retryPromptText, Style = ListStyle.SuggestedAction }, cancellationToken);
+                    return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = answerChoice, RetryPrompt = retryPromptText, Style = ListStyle.HeroCard }, cancellationToken);
                 }
             }
 

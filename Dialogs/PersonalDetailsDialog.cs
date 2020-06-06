@@ -145,7 +145,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 var sexChoice = new List<Choice>() { new Choice("Male"), new Choice("Female") };
 
-                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice, RetryPrompt = retryPromptText, Style = ListStyle.SuggestedAction }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = sexChoice, RetryPrompt = retryPromptText, Style = ListStyle.HeroCard }, cancellationToken);
             }
 
             return await stepContext.NextAsync(PersonalDetails.Sex, cancellationToken);
