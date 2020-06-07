@@ -21,6 +21,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> sexQuestionList = new List<string>() { "What is your sex?", "Are you a male or a female?" };
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
+        private readonly List<string> welcomeMessageList = new List<string>() { "What can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
 
 
         public IDictionary<string, List<QuestionTopFive>> Questionnaires { get; set; } = new Dictionary<string, List<QuestionTopFive>>();
@@ -85,6 +86,11 @@ namespace Microsoft.BotBuilderSamples
         public string FinishedQuestionnaire()
         {
             return RandomiseList(finishedQuestionnaireList);
+        }
+
+        public string WelcomeMessage()
+        {
+            return RandomiseList(welcomeMessageList);
         }
     }
 }
