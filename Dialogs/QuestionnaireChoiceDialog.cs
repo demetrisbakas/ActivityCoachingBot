@@ -49,7 +49,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            activeQuestionnaire = MainDialog.Response.Questionnaires[stepContext.Context.Activity.Text];
+            activeQuestionnaire = MainDialog.Response.Questionnaires[((FoundChoice)stepContext.Result).Value];
 
             return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 
