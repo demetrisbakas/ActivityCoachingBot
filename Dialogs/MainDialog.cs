@@ -31,6 +31,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return _luisRecognizer;
         }
 
+        private bool welcomeMessage = true;
         //private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
         public static ResponseText Response { get; } = new ResponseText();
@@ -69,7 +70,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
 
             // Use the text provided in FinalStepAsync or the default if it is the first time.
-            var messageText = stepContext.Options?.ToString() /*?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"\n\nGreet the bot to enter the personal details dialog."*/ ?? "I am your personal activity coach!";
+            var messageText = stepContext.Options?.ToString() /*?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"\n\nGreet the bot to enter the personal details dialog."*/ ?? Response.Greet();
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
@@ -140,10 +141,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                         PersonalDetailsDialog.PersonalDetails.Age = (int?)luisResult.Entities.age?[0].Number;
 
                     // Greeting message
-                    var greetText = (PersonalDetailsDialog.PersonalDetails.Name == null ? Response.Greet() : Response.Greet(PersonalDetailsDialog.PersonalDetails.Name));
-                    var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
-
+                    if (!welcomeMessage)
+                    {
+                        var greetText = (PersonalDetailsDialog.PersonalDetails.Name == null ? Response.Greet() : Response.Greet(PersonalDetailsDialog.PersonalDetails.Name));
+                        var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
+                        await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
+                    }
+                    welcomeMessage = false;
 
 
 

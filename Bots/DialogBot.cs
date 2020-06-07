@@ -40,10 +40,10 @@ namespace Microsoft.BotBuilderSamples.Bots
             //await turnContext.SendActivityAsync($"Welcome - {userName}, {userID}");
             if (PersonalDetailsDialog.PersonalDetails?.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
             {
-                //
                 PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
-                //
                 PersonalDetailsDialog.PersonalDetails.UserID = turnContext.Activity.From.Id;
+                PersonalDetailsDialog.PersonalDetails.Name = turnContext.Activity.From.Name;
+
                 MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
             }
 
