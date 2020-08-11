@@ -6,15 +6,15 @@
   "culture": "en-us",
   "tokenizerVersion": "1.0.0",
   "intents": [
-    {
-      "name": "BookFlight"
-    },
+    //{
+    //  "name": "BookFlight"
+    //},
     {
       "name": "Cancel"
     },
-    {
-      "name": "GetWeather"
-    },
+    //{
+    //  "name": "GetWeather"
+    //},
     {
       "name": "Greet"
     },
@@ -24,63 +24,63 @@
   ],
   "entities": [],
   "composites": [
-    {
-      "name": "From",
-      "children": [
-        "Airport"
-      ],
-      "roles": []
-    },
-    {
-      "name": "To",
-      "children": [
-        "Airport"
-      ],
-      "roles": []
-    }
+    //{
+    //  "name": "From",
+    //  "children": [
+    //    "Airport"
+    //  ],
+    //  "roles": []
+    //},
+    //{
+    //  "name": "To",
+    //  "children": [
+    //    "Airport"
+    //  ],
+    //  "roles": []
+    //}
   ],
   "closedLists": [
-    {
-      "name": "Airport",
-      "subLists": [
-        {
-          "canonicalForm": "Paris",
-          "list": [
-            "paris",
-            "cdg"
-          ]
-        },
-        {
-          "canonicalForm": "London",
-          "list": [
-            "london",
-            "lhr"
-          ]
-        },
-        {
-          "canonicalForm": "Berlin",
-          "list": [
-            "berlin",
-            "txl"
-          ]
-        },
-        {
-          "canonicalForm": "New York",
-          "list": [
-            "new york",
-            "jfk"
-          ]
-        },
-        {
-          "canonicalForm": "Seattle",
-          "list": [
-            "seattle",
-            "sea"
-          ]
-        }
-      ],
-      "roles": []
-    }
+    //{
+    //  "name": "Airport",
+    //  "subLists": [
+    //    {
+    //      "canonicalForm": "Paris",
+    //      "list": [
+    //        "paris",
+    //        "cdg"
+    //      ]
+    //    },
+    //    {
+    //      "canonicalForm": "London",
+    //      "list": [
+    //        "london",
+    //        "lhr"
+    //      ]
+    //    },
+    //    {
+    //      "canonicalForm": "Berlin",
+    //      "list": [
+    //        "berlin",
+    //        "txl"
+    //      ]
+    //    },
+    //    {
+    //      "canonicalForm": "New York",
+    //      "list": [
+    //        "new york",
+    //        "jfk"
+    //      ]
+    //    },
+    //    {
+    //      "canonicalForm": "Seattle",
+    //      "list": [
+    //        "seattle",
+    //        "sea"
+    //      ]
+    //    }
+    //  ],
+    //  "roles": []
+    //}
   ],
   "patternAnyEntities": [],
   "regex_entities": [],
