@@ -70,7 +70,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 MainDialog.WriteToDB(stepContext, cancellationToken);
 
                 // Show results
-                var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\n";
+                var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}";
                 var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
 
@@ -142,6 +142,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 PersonalDetailsDialog.PersonalDetails.Neuroticism = neuroticismList.Average();
             if (opennessList.Count() > 0)
                 PersonalDetailsDialog.PersonalDetails.Openness = opennessList.Average();
+
+            PersonalDetailsDialog.PersonalDetails.Cluster = MainDialog.Clustering();
         }
     }
 }

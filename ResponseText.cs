@@ -34,6 +34,8 @@ namespace Microsoft.BotBuilderSamples
             questionnaire.Add(new QuestionTopFive("Is talkative", Extraversion));
             questionnaire.Add(new QuestionTopFive("Does a thorough job", Agreeableness, true));
             questionnaire.Add(new QuestionTopFive("Is depressed, blue", Conscientiousness));
+            questionnaire.Add(new QuestionTopFive("Is original, comes up with new ideas", Neuroticism));
+            questionnaire.Add(new QuestionTopFive("Is reserved", Openness));
 
             Questionnaires.Add("Big Five", questionnaire);
         }

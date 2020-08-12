@@ -13,6 +13,8 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
@@ -270,6 +272,67 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
 
+        public static uint Clustering()
+        {
+            var dataLocation = "./Seed_Data.csv";
+
+            var context = new MLContext();
+
+            var textLoader = context.Data.CreateTextLoader(new[]
+            {
+                new TextLoader.Column("Extraversion", DataKind.Single, 0),
+                new TextLoader.Column("Agreeableness", DataKind.Single, 1),
+                new TextLoader.Column("Conscientiousness", DataKind.Single, 2),
+                new TextLoader.Column("Neuroticism", DataKind.Single, 3),
+                new TextLoader.Column("Openness", DataKind.Single, 4),
+            },
+            hasHeader: true,
+            separatorChar: ',');
+
+            IDataView data = textLoader.Load(dataLocation);
+
+            var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2);
+
+            var pipeline = context.Transforms.Concatenate("Features", "Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness")
+                .Append(context.Clustering.Trainers.KMeans(featureColumnName: "Features", numberOfClusters: 5));
+
+            var preview = trainTestData.TrainSet.Preview();
+
+            var model = pipeline.Fit(trainTestData.TrainSet);
+
+            var predictions = model.Transform(trainTestData.TestSet);
+
+            var metrics = context.Clustering.Evaluate(predictions, scoreColumnName: "Score", featureColumnName: "Features");
+
+            //Console.WriteLine($"Average minimum score: {metrics.AverageDistance}");
+
+            //var predictionFunc = model.CreatePredictionEngine<PersonalDetails, SeedPrediction>(context);
+
+            var predictionFunc = context.Model.CreatePredictionEngine<PersonalDetailsTest, SeedPrediction>(model);
+
+            var prediction = predictionFunc.Predict(new PersonalDetailsTest
+            {
+                Extraversion = (float)PersonalDetailsDialog.PersonalDetails.Extraversion,
+                Agreeableness = (float)PersonalDetailsDialog.PersonalDetails.Agreeableness,
+                Conscientiousness = (float)PersonalDetailsDialog.PersonalDetails.Conscientiousness,
+                Neuroticism = (float)PersonalDetailsDialog.PersonalDetails.Neuroticism,
+                Openness = (float)PersonalDetailsDialog.PersonalDetails.Openness
+            });
+
+            //Console.WriteLine($"Prediction - {prediction.SelectedClusterId}");
+            //Console.ReadLine();
+
+            return prediction.SelectedClusterId;
+        }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -295,5 +358,41 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var queryResult = documentClient.CreateDatabaseQuery(collection.DocumentsLink);
         }
         //
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // TEST
+    public class SeedPrediction
+    {
+        [ColumnName("PredictedLabel")]
+        public uint SelectedClusterId;
+        [ColumnName("Score")]
+        public float[] Distance;
+    }
+    public class PersonalDetailsTest
+    {
+        public float Extraversion { get; set; }
+        public float Agreeableness { get; set; }
+        public float Conscientiousness { get; set; }
+        public float Neuroticism { get; set; }
+        public float Openness { get; set; }
     }
 }

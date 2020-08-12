@@ -22,6 +22,8 @@ namespace Microsoft.BotBuilderSamples
         public double? Neuroticism { get; set; }
         public double? Openness { get; set; }
 
+        public uint? Cluster { get; set; }
+
         public IDictionary<string, int> QuestionnaireAnswers { get; set; } = new Dictionary<string, int>();
         //public List<KeyValuePair<string, string>> QuestionnaireAnswers { get; set; } = new List<KeyValuePair<string, string>>();
     }
