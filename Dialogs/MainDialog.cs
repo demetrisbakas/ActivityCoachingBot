@@ -269,7 +269,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         public static async Task<uint> ClusteringAsync()
         {
-            var dataLocation = "./Seed_Data.csv";
+            //var dataLocation = "./Seed_Data.csv";
 
 
             //IQueryable<PersonalDetails> linqQuery = table.CreateQuery<PersonalDetails>()
@@ -282,18 +282,21 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             var context = new MLContext();
 
-            var textLoader = context.Data.CreateTextLoader(new[]
-            {
-                new TextLoader.Column("Extraversion", DataKind.Single, 0),
-                new TextLoader.Column("Agreeableness", DataKind.Single, 1),
-                new TextLoader.Column("Conscientiousness", DataKind.Single, 2),
-                new TextLoader.Column("Neuroticism", DataKind.Single, 3),
-                new TextLoader.Column("Openness", DataKind.Single, 4),
-            },
-            hasHeader: true,
-            separatorChar: ',');
+            //var textLoader = context.Data.CreateTextLoader(new[]
+            //{
+            //    new TextLoader.Column("Extraversion", DataKind.Single, 0),
+            //    new TextLoader.Column("Agreeableness", DataKind.Single, 1),
+            //    new TextLoader.Column("Conscientiousness", DataKind.Single, 2),
+            //    new TextLoader.Column("Neuroticism", DataKind.Single, 3),
+            //    new TextLoader.Column("Openness", DataKind.Single, 4),
+            //},
+            //hasHeader: true,
+            //separatorChar: ',');
 
-            IDataView data = textLoader.Load(dataLocation);
+            IDataView data = context.Data.LoadFromEnumerable(dataList);
+
+
+            //IDataView data = textLoader.Load(dataLocation);
 
             var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2);
 
@@ -330,7 +333,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         }
 
 
-        private static async Task<List<ClusterPersonalDetails>> QueryClusterDetailsAsync()
+        private static async Task<List<ClusterPersonalDetailsWithoutNull>> QueryClusterDetailsAsync()
         {
             var sqlQueryText = "SELECT c.document.Extraversion, c.document.Agreeableness, c.document.Conscientiousness, c.document.Neuroticism, c.document.Openness FROM c";
 
@@ -363,8 +366,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return RemoveNullValues(detailsList);
         }
 
-        private static List<ClusterPersonalDetails> RemoveNullValues(List<ClusterPersonalDetails> detailsList)
+        private static List<ClusterPersonalDetailsWithoutNull> RemoveNullValues(List<ClusterPersonalDetails> detailsList)
         {
+            var outputList = new List<ClusterPersonalDetailsWithoutNull>();
+
             foreach (ClusterPersonalDetails details in detailsList)
             {
                 if (details.Extraversion == null)
@@ -377,9 +382,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     details.Neuroticism = 0;
                 if (details.Openness == null)
                     details.Openness = 0;
+
+                outputList.Add(new ClusterPersonalDetailsWithoutNull() { Extraversion = (float)details.Extraversion, Agreeableness = (float)details.Agreeableness, Conscientiousness = (float)details.Conscientiousness, Neuroticism = (float)details.Neuroticism, Openness = (float)details.Openness });
             }
 
-            return detailsList;
+            return outputList;
         }
 
 

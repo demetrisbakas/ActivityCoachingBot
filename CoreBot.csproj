@@ -24,12 +24,6 @@
     <PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.3.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Seed_Data.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
   <Import Project="PostDeployScripts\IncludeSources.targets" Condition="Exists('PostDeployScripts\IncludeSources.targets')" />
   <Import Project="..\PostDeployScripts\IncludeSources.targets" Condition="Exists('..\PostDeployScripts\IncludeSources.targets')" />
   
