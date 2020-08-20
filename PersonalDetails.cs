@@ -16,11 +16,11 @@ namespace Microsoft.BotBuilderSamples
 
         public string Sex { get; set; }
 
-        public double? Extraversion { get; set; } 
-        public double? Agreeableness { get; set; }
-        public double? Conscientiousness { get; set; }
-        public double? Neuroticism { get; set; }
-        public double? Openness { get; set; }
+        public float? Extraversion { get; set; } 
+        public float? Agreeableness { get; set; }
+        public float? Conscientiousness { get; set; }
+        public float? Neuroticism { get; set; }
+        public float? Openness { get; set; }
 
         public uint? Cluster { get; set; }
 

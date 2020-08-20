@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CoreBot;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Bot.Builder;
@@ -264,17 +267,18 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
-
-
-
-
-
-
-
-
-        public static uint Clustering()
+        public static async Task<uint> ClusteringAsync()
         {
             var dataLocation = "./Seed_Data.csv";
+
+
+            //IQueryable<PersonalDetails> linqQuery = table.CreateQuery<PersonalDetails>()
+            //.Select(x => new PersonalDetails());
+
+
+            var dataList = await QueryClusterDetailsAsync();
+
+
 
             var context = new MLContext();
 
@@ -308,9 +312,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             //var predictionFunc = model.CreatePredictionEngine<PersonalDetails, SeedPrediction>(context);
 
-            var predictionFunc = context.Model.CreatePredictionEngine<PersonalDetailsTest, SeedPrediction>(model);
+            var predictionFunc = context.Model.CreatePredictionEngine<ClusterPersonalDetailsWithoutNull, SeedPrediction>(model);
 
-            var prediction = predictionFunc.Predict(new PersonalDetailsTest
+            var prediction = predictionFunc.Predict(new ClusterPersonalDetailsWithoutNull
             {
                 Extraversion = (float)PersonalDetailsDialog.PersonalDetails.Extraversion,
                 Agreeableness = (float)PersonalDetailsDialog.PersonalDetails.Agreeableness,
@@ -326,39 +330,82 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         }
 
 
-
-
-
-
-
-
-
-
-
-
-        //
-        public void TestSQL()
+        private static async Task<List<ClusterPersonalDetails>> QueryClusterDetailsAsync()
         {
-            var querySpec = new SqlQuerySpec
+            var sqlQueryText = "SELECT c.document.Extraversion, c.document.Agreeableness, c.document.Conscientiousness, c.document.Neuroticism, c.document.Openness FROM c";
+
+            //Console.WriteLine("Running query: {0}\n", sqlQueryText);
+
+            QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+
+            CosmosClient cosmosClient = new CosmosClient(cosmosServiceEndpoint, cosmosDBKey);
+            Azure.Cosmos.Database database;
+            database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
+            //Console.WriteLine("Created Database: {0}\n", this.database.Id);
+            Container container;
+            container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerId, "/id");
+            //Console.WriteLine("Created Container: {0}\n", this.container.Id);
+
+            FeedIterator<ClusterPersonalDetails> queryResultSetIterator = container.GetItemQueryIterator<ClusterPersonalDetails>(queryDefinition);
+
+            List<ClusterPersonalDetails> detailsList = new List<ClusterPersonalDetails>();
+
+            while (queryResultSetIterator.HasMoreResults)
             {
-                QueryText = "select * from c",
-                Parameters = new SqlParameterCollection
+                Azure.Cosmos.FeedResponse<ClusterPersonalDetails> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                foreach (ClusterPersonalDetails details in currentResultSet)
                 {
-                    new SqlParameter
-                    {
-                        Name = "@id",
-                        //Value = userId
-                    }
+                    detailsList.Add(details);
+                    //Console.WriteLine("\tRead {0}\n", family);
                 }
-            };
+            }
 
-            var documentClient = new DocumentClient(new Uri(cosmosServiceEndpoint), cosmosDBKey);
-            var database = documentClient.CreateDatabaseQuery().FirstOrDefault(d => d.Id == cosmosDBDatabaseName);
-            var collection = documentClient.CreateDocumentCollectionQuery(new Uri(cosmosServiceEndpoint), "select * from c").FirstOrDefault();
-            var queryResult = documentClient.CreateDatabaseQuery(collection.DocumentsLink);
+            return RemoveNullValues(detailsList);
         }
+
+        private static List<ClusterPersonalDetails> RemoveNullValues(List<ClusterPersonalDetails> detailsList)
+        {
+            foreach (ClusterPersonalDetails details in detailsList)
+            {
+                if (details.Extraversion == null)
+                    details.Extraversion = 0;
+                if (details.Agreeableness == null)
+                    details.Agreeableness = 0;
+                if (details.Conscientiousness == null)
+                    details.Conscientiousness = 0;
+                if (details.Neuroticism == null)
+                    details.Neuroticism = 0;
+                if (details.Openness == null)
+                    details.Openness = 0;
+            }
+
+            return detailsList;
+        }
+
+
+
+
+
         //
-    }
+        //public static void TestSQL()
+        //{
+        //    var querySpec = new SqlQuerySpec
+        //    {
+        //        QueryText = "select * from c",
+        //        Parameters = new SqlParameterCollection
+        //        {
+        //            new SqlParameter
+        //            {
+        //                Name = "@id",
+        //                //Value = userId
+        //            }
+        //        }
+        //    };
+
+        //    var documentClient = new DocumentClient(new Uri(cosmosServiceEndpoint), cosmosDBKey);
+        //    var database = documentClient.CreateDatabaseQuery().FirstOrDefault(d => d.Id == cosmosDBDatabaseName);
+        //    var collection = documentClient.CreateDocumentCollectionQuery(new Uri(cosmosServiceEndpoint), "select * from c").FirstOrDefault();
+        //    var queryResult = documentClient.CreateDatabaseQuery(collection.DocumentsLink);
 
 
 
@@ -371,28 +418,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
 
+        //    FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-
-
-
-
-
-
-
-    // TEST
-    public class SeedPrediction
-    {
-        [ColumnName("PredictedLabel")]
-        public uint SelectedClusterId;
-        [ColumnName("Score")]
-        public float[] Distance;
-    }
-    public class PersonalDetailsTest
-    {
-        public float Extraversion { get; set; }
-        public float Agreeableness { get; set; }
-        public float Conscientiousness { get; set; }
-        public float Neuroticism { get; set; }
-        public float Openness { get; set; }
+        //    IQueryable<dynamic> familyQueryInSql = client.CreateDocumentQuery<dynamic>(UriFactory.CreateDocumentCollectionUri(cosmosDBDatabaseName, cosmosDBConteinerId), "SELECT * FROM c", queryOptions);
+        //}
+        //
     }
 }

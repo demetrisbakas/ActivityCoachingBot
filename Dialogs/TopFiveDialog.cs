@@ -1,4 +1,5 @@
 ﻿using CoreBot;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -65,7 +66,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (finished)
             {
-                CalculatePersonalityTraits();
+                await CalculatePersonalityTraitsAsync();
 
                 MainDialog.WriteToDB(stepContext, cancellationToken);
 
@@ -90,7 +91,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
-        private void CalculatePersonalityTraits()
+        private async Task CalculatePersonalityTraitsAsync()
         {
             List<int> extraversionList = new List<int>(), agreeablenessList = new List<int>(), conscientiousnessList = new List<int>(), neuroticismList = new List<int>(), opennessList = new List<int>();
             int score;
@@ -133,17 +134,26 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
 
             if (extraversionList.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.Extraversion = extraversionList.Average();
+                PersonalDetailsDialog.PersonalDetails.Extraversion = (float)extraversionList.Average();
             if (agreeablenessList.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.Agreeableness = agreeablenessList.Average();
+                PersonalDetailsDialog.PersonalDetails.Agreeableness = (float)agreeablenessList.Average();
             if (conscientiousnessList.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.Conscientiousness = conscientiousnessList.Average();
+                PersonalDetailsDialog.PersonalDetails.Conscientiousness = (float)conscientiousnessList.Average();
             if (neuroticismList.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.Neuroticism = neuroticismList.Average();
+                PersonalDetailsDialog.PersonalDetails.Neuroticism = (float)neuroticismList.Average();
             if (opennessList.Count() > 0)
-                PersonalDetailsDialog.PersonalDetails.Openness = opennessList.Average();
+                PersonalDetailsDialog.PersonalDetails.Openness = (float)opennessList.Average();
 
-            PersonalDetailsDialog.PersonalDetails.Cluster = MainDialog.Clustering();
+
+
+
+
+
+
+
+
+            PersonalDetailsDialog.PersonalDetails.Cluster = await MainDialog.ClusteringAsync();
+            //await MainDialog.ClusteringAsync();
         }
     }
 }
