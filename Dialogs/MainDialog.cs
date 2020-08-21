@@ -31,6 +31,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private const string cosmosDBConteinerId = "bot-storage";
         private static FlightBookingRecognizer _luisRecognizer;
         public static Task<IDictionary<string, object>> ReadFromDb;
+        public static Task<List<ClusterPersonalDetailsWithoutNull>> ClusteringData;
 
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
         public static FlightBookingRecognizer Get_luisRecognizer()
@@ -276,7 +277,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //.Select(x => new PersonalDetails());
 
 
-            var dataList = await QueryClusterDetailsAsync();
+            var dataList = await ClusteringData;
 
 
 
@@ -333,7 +334,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         }
 
 
-        private static async Task<List<ClusterPersonalDetailsWithoutNull>> QueryClusterDetailsAsync()
+        public static async Task<List<ClusterPersonalDetailsWithoutNull>> QueryClusterDetailsAsync()
         {
             var sqlQueryText = "SELECT c.document.Extraversion, c.document.Agreeableness, c.document.Conscientiousness, c.document.Neuroticism, c.document.Openness FROM c";
 

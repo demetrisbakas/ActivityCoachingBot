@@ -45,6 +45,7 @@ namespace Microsoft.BotBuilderSamples.Bots
                 PersonalDetailsDialog.PersonalDetails.Name = turnContext.Activity.From.Name;
 
                 MainDialog.ReadFromDb = MainDialog.CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
+                MainDialog.ClusteringData = MainDialog.QueryClusterDetailsAsync();
             }
 
             await base.OnTurnAsync(turnContext, cancellationToken);
