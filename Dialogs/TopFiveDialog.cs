@@ -67,11 +67,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (finished)
             {
                 await CalculatePersonalityTraitsAsync();
+                string tip = await MainDialog.Response.TipMessageAsync();
 
                 MainDialog.WriteToDB(stepContext, cancellationToken);
 
                 // Show results
-                var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}";
+                var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
                 var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
 

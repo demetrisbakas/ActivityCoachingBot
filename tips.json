@@ -1,0 +1,22 @@
+[
+    {
+        "TipMessage": "Try to walk more",
+        "Cluster": 1
+    },
+    {
+        "TipMessage": "Talk to more people",
+        "Cluster": 2
+    },
+    {
+        "TipMessage": "Focus on work",
+        "Cluster": 3
+    },
+    {
+        "TipMessage": "Be more productive",
+        "Cluster": 4
+    },
+    {
+        "TipMessage": "Exercise",
+        "Cluster": 5
+    }
+]

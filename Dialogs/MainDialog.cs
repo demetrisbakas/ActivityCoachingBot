@@ -29,6 +29,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private const string cosmosDBKey = "62Flv5AdBkoKQed8WixdZeZEWp6yhn1rptznPnYQb1Yt5jI8UgYnJ0pOQuJTTOVLHr9le5sMzaWUEAKmbXTF1w==";
         private const string cosmosDBDatabaseName = "bot-cosmos-sql-db";
         private const string cosmosDBConteinerId = "bot-storage";
+        private const string cosmosDBConteinerIdTips = "tips";
         private static FlightBookingRecognizer _luisRecognizer;
         public static Task<IDictionary<string, object>> ReadFromDb;
         public static Task<List<ClusterPersonalDetailsWithoutNull>> ClusteringData;
@@ -310,7 +311,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             var predictions = model.Transform(trainTestData.TestSet);
 
-            var metrics = context.Clustering.Evaluate(predictions, scoreColumnName: "Score", featureColumnName: "Features");
+            //var metrics = context.Clustering.Evaluate(predictions, scoreColumnName: "Score", featureColumnName: "Features");
 
             //Console.WriteLine($"Average minimum score: {metrics.AverageDistance}");
 
@@ -366,6 +367,40 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             return RemoveNullValues(detailsList);
         }
+
+        public static async Task<List<string>> QueryTips(int cluster)
+        {
+            var sqlQueryText = "SELECT * FROM c WHERE c.Cluster=" + cluster.ToString();
+
+            //Console.WriteLine("Running query: {0}\n", sqlQueryText);
+
+            QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+
+            CosmosClient cosmosClient = new CosmosClient(cosmosServiceEndpoint, cosmosDBKey);
+            Azure.Cosmos.Database database;
+            database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
+            //Console.WriteLine("Created Database: {0}\n", this.database.Id);
+            Container container;
+            container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerIdTips, "/tips");
+            //Console.WriteLine("Created Container: {0}\n", this.container.Id);
+
+            FeedIterator<Tip> queryResultSetIterator = container.GetItemQueryIterator<Tip>(queryDefinition);
+
+            List<string> tipList = new List<string>();
+
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                Azure.Cosmos.FeedResponse<Tip> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                foreach (Tip details in currentResultSet)
+                {
+                    tipList.Add(details.TipMessage);
+                    //Console.WriteLine("\tRead {0}\n", family);
+                }
+            }
+
+            return tipList;
+        }
+
 
         private static List<ClusterPersonalDetailsWithoutNull> RemoveNullValues(List<ClusterPersonalDetails> detailsList)
         {

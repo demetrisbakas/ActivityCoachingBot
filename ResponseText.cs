@@ -1,4 +1,5 @@
 ﻿using CoreBot;
+using Microsoft.BotBuilderSamples.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,6 +94,12 @@ namespace Microsoft.BotBuilderSamples
         public string WelcomeMessage()
         {
             return RandomiseList(welcomeMessageList);
+        }
+
+        public async Task<string> TipMessageAsync()
+        {
+            var tipList = await MainDialog.QueryTips((int)PersonalDetailsDialog.PersonalDetails.Cluster);
+            return RandomiseList(tipList);
         }
     }
 }
