@@ -97,6 +97,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Sand to DB
             MainDialog.WriteToDB(stepContext, cancellationToken);
 
+            // Test for questionnairs
+            //MainDialog.WriteQuestionnairesTempAsync(stepContext, cancellationToken);
+
             if (PersonalDetails.Age == null)
             {
                 var AgeStepMsgText = MainDialog.Response.AskAge();

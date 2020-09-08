@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
+using Newtonsoft.Json;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
@@ -30,9 +32,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private const string cosmosDBDatabaseName = "bot-cosmos-sql-db";
         private const string cosmosDBConteinerId = "bot-storage";
         private const string cosmosDBConteinerIdTips = "tips";
+        private const string cosmosDBConteinerIdQuestionnaires = "questionnaires";
         private static FlightBookingRecognizer _luisRecognizer;
         public static Task<IDictionary<string, object>> ReadFromDb;
         public static Task<List<ClusterPersonalDetailsWithoutNull>> ClusteringData;
+        public static Task<List<KeyValuePair<string, List<QuestionTopFive>>>> Questionnaires;
 
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
         public static FlightBookingRecognizer Get_luisRecognizer()
@@ -269,6 +273,28 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
+        //public static async void WriteQuestionnairesTempAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        //{
+        //    CosmosDbPartitionedStorage CosmosDBQueryQuestionnaires = new CosmosDbPartitionedStorage(new CosmosDbPartitionedStorageOptions
+        //    {
+        //        AuthKey = cosmosDBKey,
+        //        ContainerId = "test",
+        //        CosmosDbEndpoint = cosmosServiceEndpoint,
+        //        DatabaseId = cosmosDBDatabaseName,
+        //    });
+
+        //    // Sand to DB
+        //    var changes = new Dictionary<string, object>() { { Response.Questionnaires.FirstOrDefault().Key, Response.Questionnaires.FirstOrDefault() } };
+        //    try
+        //    {
+        //        await CosmosDBQueryQuestionnaires.WriteAsync(changes, cancellationToken);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+        //    }
+        //}
+
         public static async Task<uint> ClusteringAsync()
         {
             //var dataLocation = "./Seed_Data.csv";
@@ -302,14 +328,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2);
 
-            var pipeline = context.Transforms.Concatenate("Features", "Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness")
-                .Append(context.Clustering.Trainers.KMeans(featureColumnName: "Features", numberOfClusters: 5));
+            var pipeline = context.Transforms.Concatenate("Features", "Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness").Append(context.Clustering.Trainers.KMeans(featureColumnName: "Features", numberOfClusters: 5));
 
-            var preview = trainTestData.TrainSet.Preview();
+            //var preview = trainTestData.TrainSet.Preview();
 
             var model = pipeline.Fit(trainTestData.TrainSet);
 
-            var predictions = model.Transform(trainTestData.TestSet);
+            //var predictions = model.Transform(trainTestData.TestSet);
 
             //var metrics = context.Clustering.Evaluate(predictions, scoreColumnName: "Score", featureColumnName: "Features");
 
@@ -368,7 +393,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return RemoveNullValues(detailsList);
         }
 
-        public static async Task<List<string>> QueryTips(int cluster)
+        public static async Task<List<string>> QueryTipsAsync(int cluster)
         {
             var sqlQueryText = "SELECT * FROM c WHERE c.Cluster=" + cluster.ToString();
 
@@ -381,7 +406,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
             //Console.WriteLine("Created Database: {0}\n", this.database.Id);
             Container container;
-            container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerIdTips, "/tips");
+            container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerIdTips, "/id");
             //Console.WriteLine("Created Container: {0}\n", this.container.Id);
 
             FeedIterator<Tip> queryResultSetIterator = container.GetItemQueryIterator<Tip>(queryDefinition);
@@ -399,6 +424,47 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
 
             return tipList;
+        }
+
+        public static async Task<List<KeyValuePair<string, List<QuestionTopFive>>>> QueryQuestionnairesAsync()
+        {
+            var sqlQueryText = "SELECT * FROM c";
+
+            //Console.WriteLine("Running query: {0}\n", sqlQueryText);
+
+            QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+
+            CosmosClient cosmosClient = new CosmosClient(cosmosServiceEndpoint, cosmosDBKey);
+            Azure.Cosmos.Database database;
+            database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
+            //Console.WriteLine("Created Database: {0}\n", this.database.Id);
+            Container container;
+            container = await database.CreateContainerIfNotExistsAsync("test" /*cosmosDBConteinerIdQuestionnaires*/, "/id");
+            //Console.WriteLine("Created Container: {0}\n", this.container.Id);
+
+            FeedIterator<KeyValuePair<string, List<QuestionTopFive>>> queryResultSetIterator = container.GetItemQueryIterator<KeyValuePair<string, List<QuestionTopFive>>>(queryDefinition);
+
+            var questionnaireList = new List<KeyValuePair<string, List<QuestionTopFive>>>();
+
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                Azure.Cosmos.FeedResponse<KeyValuePair<string, List<QuestionTopFive>>> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+
+                // Test
+                using (StreamReader r = new StreamReader(@"C:\SourceTree Repos\ActivityCoachingBot\test.json"))
+                {
+                    string json = r.ReadToEnd();
+                    var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
+                }
+
+                foreach (KeyValuePair<string, List<QuestionTopFive>> questionnaire in currentResultSet)
+                {
+                    questionnaireList.Add(questionnaire);
+                    //Console.WriteLine("\tRead {0}\n", family);
+                }
+            }
+
+            return questionnaireList;
         }
 
 

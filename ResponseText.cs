@@ -25,7 +25,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> welcomeMessageList = new List<string>() { "What can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
 
 
-        public IDictionary<string, List<QuestionTopFive>> Questionnaires { get; set; } = new Dictionary<string, List<QuestionTopFive>>();
+        public List<KeyValuePair<string, List<QuestionTopFive>>> Questionnaires { get; set; } = new List<KeyValuePair<string, List<QuestionTopFive>>>();
         public List<QuestionTopFive> questionnaire = new List<QuestionTopFive>();
 
 
@@ -38,7 +38,7 @@ namespace Microsoft.BotBuilderSamples
             questionnaire.Add(new QuestionTopFive("Is original, comes up with new ideas", Neuroticism));
             questionnaire.Add(new QuestionTopFive("Is reserved", Openness));
 
-            Questionnaires.Add("Big Five", questionnaire);
+            Questionnaires.Add(new KeyValuePair<string, List<QuestionTopFive>>("Big Five", questionnaire));
         }
 
         private string RandomiseList(List<string> inputList)
@@ -98,8 +98,13 @@ namespace Microsoft.BotBuilderSamples
 
         public async Task<string> TipMessageAsync()
         {
-            var tipList = await MainDialog.QueryTips((int)PersonalDetailsDialog.PersonalDetails.Cluster);
+            var tipList = await MainDialog.QueryTipsAsync((int)PersonalDetailsDialog.PersonalDetails.Cluster);
             return RandomiseList(tipList);
         }
+
+        //public async void QuestionnairesAsync()
+        //{
+        //    Questionnaires = await MainDialog.Questionnaires;
+        //}
     }
 }

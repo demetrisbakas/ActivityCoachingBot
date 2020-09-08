@@ -38,7 +38,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
             var questionnaireChoice = new List<Choice>();
-            var questionnairesNames = MainDialog.Response.Questionnaires.Keys.ToList();
+            //var questionnairesNames = MainDialog.Response.Questionnaires.Keys.ToList();
+            var questionnairesNames = new List<string>();
+
+            // Wait for the questionaires to be fetched from the database
+            MainDialog.Response.Questionnaires = await MainDialog.Questionnaires;
+
+            foreach (KeyValuePair<string, List<QuestionTopFive>> kvp in MainDialog.Response.Questionnaires)
+            {
+                questionnairesNames.Add(kvp.Key);
+            }
             foreach (string name in questionnairesNames)
             {
                 questionnaireChoice.Add(new Choice(name));
@@ -49,7 +58,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            activeQuestionnaire = MainDialog.Response.Questionnaires[((FoundChoice)stepContext.Result).Value];
+            //activeQuestionnaire = MainDialog.Response.Questionnaires[((FoundChoice)stepContext.Result).Value];
+            activeQuestionnaire = (from kvp in MainDialog.Response.Questionnaires where kvp.Key == ((FoundChoice)stepContext.Result).Value select kvp.Value).FirstOrDefault();
 
             return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 

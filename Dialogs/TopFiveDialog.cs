@@ -97,10 +97,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             List<int> extraversionList = new List<int>(), agreeablenessList = new List<int>(), conscientiousnessList = new List<int>(), neuroticismList = new List<int>(), opennessList = new List<int>();
             int score;
 
-            var questionnairesNames = MainDialog.Response.Questionnaires.Keys.ToList();
+            var questionnairesNames = new List<string>();
+            foreach (KeyValuePair<string, List<QuestionTopFive>> kvp in MainDialog.Response.Questionnaires)
+            {
+                questionnairesNames.Add(kvp.Key);
+            }
+
             foreach (string name in questionnairesNames)
             {
-                List<QuestionTopFive> questionnaire = MainDialog.Response.Questionnaires[name];
+                //List<QuestionTopFive> questionnaire = MainDialog.Response.Questionnaires.Where(kvp => kvp.Key == name); //MainDialog.Response.Questionnaires[name];
+                List<QuestionTopFive> questionnaire = (from kvp in MainDialog.Response.Questionnaires where kvp.Key == name select kvp.Value).FirstOrDefault();
 
                 foreach (QuestionTopFive obj in questionnaire)
                 {
