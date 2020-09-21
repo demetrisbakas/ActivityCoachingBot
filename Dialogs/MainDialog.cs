@@ -346,11 +346,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             var prediction = predictionFunc.Predict(new ClusterPersonalDetailsWithoutNull
             {
-                Extraversion = (float)PersonalDetailsDialog.PersonalDetails.Extraversion,
-                Agreeableness = (float)PersonalDetailsDialog.PersonalDetails.Agreeableness,
-                Conscientiousness = (float)PersonalDetailsDialog.PersonalDetails.Conscientiousness,
-                Neuroticism = (float)PersonalDetailsDialog.PersonalDetails.Neuroticism,
-                Openness = (float)PersonalDetailsDialog.PersonalDetails.Openness
+                Extraversion = PersonalDetailsDialog.PersonalDetails.Extraversion != null ? (float)PersonalDetailsDialog.PersonalDetails.Extraversion : 0,
+                Agreeableness = PersonalDetailsDialog.PersonalDetails.Agreeableness != null ? (float)PersonalDetailsDialog.PersonalDetails.Agreeableness : 0,
+                Conscientiousness = PersonalDetailsDialog.PersonalDetails.Conscientiousness != null ? (float)PersonalDetailsDialog.PersonalDetails.Conscientiousness : 0,
+                Neuroticism = PersonalDetailsDialog.PersonalDetails.Neuroticism != null ? (float)PersonalDetailsDialog.PersonalDetails.Neuroticism : 0,
+                Openness = PersonalDetailsDialog.PersonalDetails.Openness != null ? (float)PersonalDetailsDialog.PersonalDetails.Openness : 0
             });
 
             //Console.WriteLine($"Prediction - {prediction.SelectedClusterId}");
@@ -428,7 +428,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         public static async Task<List<KeyValuePair<string, List<QuestionTopFive>>>> QueryQuestionnairesAsync()
         {
-            var sqlQueryText = "SELECT * FROM c";
+            // test
+            //using (StreamReader r = new StreamReader(@"C:\SourceTree Repos\ActivityCoachingBot\test.json"))
+            //{
+            //    string json = r.ReadToEnd();
+            //    //var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
+            //    var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
+            //}
+            //
+
+            var sqlQueryText = "SELECT c.document.Key, c.document[\"Value\"] FROM c";
 
             //Console.WriteLine("Running query: {0}\n", sqlQueryText);
 
@@ -439,7 +448,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
             //Console.WriteLine("Created Database: {0}\n", this.database.Id);
             Container container;
-            container = await database.CreateContainerIfNotExistsAsync("test" /*cosmosDBConteinerIdQuestionnaires*/, "/id");
+            container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerIdQuestionnaires, "/id");
             //Console.WriteLine("Created Container: {0}\n", this.container.Id);
 
             FeedIterator<KeyValuePair<string, List<QuestionTopFive>>> queryResultSetIterator = container.GetItemQueryIterator<KeyValuePair<string, List<QuestionTopFive>>>(queryDefinition);
@@ -451,11 +460,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 Azure.Cosmos.FeedResponse<KeyValuePair<string, List<QuestionTopFive>>> currentResultSet = await queryResultSetIterator.ReadNextAsync();
 
                 // Test
-                using (StreamReader r = new StreamReader(@"C:\SourceTree Repos\ActivityCoachingBot\test.json"))
-                {
-                    string json = r.ReadToEnd();
-                    var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
-                }
+                //using (StreamReader r = new StreamReader(@"C:\SourceTree Repos\ActivityCoachingBot\test2.json"))
+                //{
+                //    string json = r.ReadToEnd();
+                //    //var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
+                //    var items = JsonConvert.DeserializeObject<List<string>>(json);
+                //}
 
                 foreach (KeyValuePair<string, List<QuestionTopFive>> questionnaire in currentResultSet)
                 {

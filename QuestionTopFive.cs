@@ -19,7 +19,7 @@ namespace CoreBot
             Neuroticism,
             Openness
         };
-        public PersonalityTrait personalityTrait;
+        public PersonalityTrait personalityTrait { get; set; }
 
         public bool reverseLogic = false;
 

@@ -99,6 +99,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             // Test for questionnairs
             //MainDialog.WriteQuestionnairesTempAsync(stepContext, cancellationToken);
+            //MainDialog.WriteQuestionnairesTemp2Async(stepContext, cancellationToken);
 
             if (PersonalDetails.Age == null)
             {
