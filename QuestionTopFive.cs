@@ -76,5 +76,19 @@ namespace CoreBot
             Answers.Add(new Choice(answer4));
             Answers.Add(new Choice(answer5));
         }
+
+        public static List<Choice> DefaultAnswers()
+        {
+            var answerList = new List<Choice>
+            {
+                new Choice("Not at all"),
+                new Choice("A little bit"),
+                new Choice("Neutral"),
+                new Choice("Much"),
+                new Choice("Very much")
+            };
+
+            return answerList;
+        }
     }
 }

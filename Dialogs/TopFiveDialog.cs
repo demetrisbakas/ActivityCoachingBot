@@ -4,8 +4,10 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +72,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 string tip = await MainDialog.Response.TipMessageAsync();
 
                 MainDialog.WriteToDB(stepContext, cancellationToken);
+
+
+                // Test
+                //var resultCard = CreateAdaptiveCardAttachment();
+                //var response = MessageFactory.Attachment(resultCard, ssml: "Here are your results!");
+                //await stepContext.Context.SendActivityAsync(response, cancellationToken);
 
                 // Show results
                 var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
@@ -161,6 +169,24 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             PersonalDetailsDialog.PersonalDetails.Cluster = await MainDialog.ClusteringAsync();
             //await MainDialog.ClusteringAsync();
+        }
+
+        private Attachment CreateAdaptiveCardAttachment()
+        {
+            var cardResourcePath = "CoreBot.Cards.resultCard.json";
+
+            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    var adaptiveCard = reader.ReadToEnd();
+                    return new Attachment()
+                    {
+                        ContentType = "application/vnd.microsoft.card.adaptive",
+                        Content = JsonConvert.DeserializeObject(adaptiveCard),
+                    };
+                }
+            }
         }
     }
 }

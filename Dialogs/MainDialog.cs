@@ -474,7 +474,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 }
             }
 
-            return questionnaireList;
+            return ReplaceMissingQuestionValues(questionnaireList);
         }
 
 
@@ -501,6 +501,20 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return outputList;
         }
 
+
+        private static List<KeyValuePair<string, List<QuestionTopFive>>> ReplaceMissingQuestionValues(List<KeyValuePair<string, List<QuestionTopFive>>> questionnaireList)
+        {
+            foreach(var questionnaire in questionnaireList)
+            {
+                foreach(var question in questionnaire.Value)
+                {
+                    if (question.Answers.Count() == 0)
+                        question.Answers = QuestionTopFive.DefaultAnswers();
+                }
+            }
+
+            return questionnaireList;
+        }
 
 
 
