@@ -1,113 +1,141 @@
-{
-    "id": "Test Questionaire",
-    "document": 
+[
     {
-        "Key": "Test Questionaire",
-        "Value":
+        "id": "Test Questionaire",
+        "document": 
         {
-            "$type": "System.Collections.Generic.List`1[[CoreBot.QuestionTopFive, CoreBot]], System.Private.CoreLib",
-            "$values":
-            [
-                {
-                    "$type": "CoreBot.QuestionTopFive, CoreBot",
-                    "personalityTrait": 0,
-                    "reverseLogic": false,
-                    "Question": "Is talkative",
-                    "Answers": 
+            "Key": "Test Questionaire",
+            "Value":
+            {
+                "$type": "System.Collections.Generic.List`1[[CoreBot.QuestionTopFive, CoreBot]], System.Private.CoreLib",
+                "$values":
+                [
                     {
-                        "$type": "System.Collections.Generic.List`1[[Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs]], System.Private.CoreLib",
-                        "$values": 
-                        [
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Not at all"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "A little bit"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Neutral"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Much"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Very much"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "$type": "CoreBot.QuestionTopFive, CoreBot",
-                    "personalityTrait": 1,
-                    "reverseLogic": true,
-                    "Question": "Does a thorough job",
-                    "Answers":
+                        "$type": "CoreBot.QuestionTopFive, CoreBot",
+                        "personalityTrait": 0,
+                        "reverseLogic": false,
+                        "Question": "Is talkative",
+                        "Answers": 
+                        {
+                            "$type": "System.Collections.Generic.List`1[[Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs]], System.Private.CoreLib",
+                            "$values": 
+                            [
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Not at all"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "A little bit"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Neutral"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Much"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Very much"
+                                }
+                            ]
+                        }
+                    },
                     {
-                        "$type": "System.Collections.Generic.List`1[[Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs]], System.Private.CoreLib",
-                        "$values":
-                        [
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Not at all"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "A little bit"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Neutral"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Much"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Very much"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "$type": "CoreBot.QuestionTopFive, CoreBot",
-                    "personalityTrait": 2,
-                    "reverseLogic": false,
-                    "Question": "Is depressed, blue",
-                    "Answers":
+                        "$type": "CoreBot.QuestionTopFive, CoreBot",
+                        "personalityTrait": 1,
+                        "reverseLogic": true,
+                        "Question": "Does a thorough job",
+                        "Answers":
+                        {
+                            "$type": "System.Collections.Generic.List`1[[Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs]], System.Private.CoreLib",
+                            "$values":
+                            [
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Not at all"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "A little bit"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Neutral"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Much"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Very much"
+                                }
+                            ]
+                        }
+                    },
                     {
-                        "$type": "System.Collections.Generic.List`1[[Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs]], System.Private.CoreLib",
-                        "$values":
-                        [
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Not at all"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "A little bit"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Neutral"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Much"
-                            },
-                            {
-                                "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
-                                "value": "Very much"
-                            }
-                        ]
+                        "$type": "CoreBot.QuestionTopFive, CoreBot",
+                        "personalityTrait": 2,
+                        "reverseLogic": false,
+                        "Question": "Is depressed, blue",
+                        "Answers":
+                        {
+                            "$type": "System.Collections.Generic.List`1[[Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs]], System.Private.CoreLib",
+                            "$values":
+                            [
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Not at all"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "A little bit"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Neutral"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Much"
+                                },
+                                {
+                                    "$type": "Microsoft.Bot.Builder.Dialogs.Choices.Choice, Microsoft.Bot.Builder.Dialogs",
+                                    "value": "Very much"
+                                }
+                            ]
+                        }
                     }
-                }
-            ]
+                ]
+            }
+        }
+    },
+    {
+        "id": "Test Questionaire 2",
+        "document": 
+        {
+            "Key": "Test Questionaire 2",
+            "Value":
+            {
+                "$type": "System.Collections.Generic.List`1[[CoreBot.QuestionTopFive, CoreBot]], System.Private.CoreLib",
+                "$values":
+                [
+                    {
+                        "$type": "CoreBot.QuestionTopFive, CoreBot",
+                        "personalityTrait": 3,
+                        "reverseLogic": false,
+                        "Question": "Is original, comes up with new ideas"
+                    },
+                    {
+                        "$type": "CoreBot.QuestionTopFive, CoreBot",
+                        "personalityTrait": 4,
+                        "reverseLogic": true,
+                        "Question": "Is reserved"
+                    }
+                ]
+            }
         }
     }
-}
+]
