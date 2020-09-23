@@ -1,4 +1,5 @@
-﻿using CoreBot;
+﻿using AdaptiveCards;
+using CoreBot;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -19,6 +20,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
     {
         private bool finished = false, finishedBefore = true;
         private string activeQuestion;
+        public static string temp = "test";
 
         public TopFiveDialog()
            : base(nameof(TopFiveDialog))
@@ -75,12 +77,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
 
                 // Test
-                //var resultCard = CreateAdaptiveCardAttachment();
-                //var response = MessageFactory.Attachment(resultCard, ssml: "Here are your results!");
-                //await stepContext.Context.SendActivityAsync(response, cancellationToken);
+                var resultCard = CreateAdaptiveCardAttachment();
+                var response = MessageFactory.Attachment(resultCard/*, ssml: "Here are your results!"*/);
+                await stepContext.Context.SendActivityAsync(response, cancellationToken);
 
                 // Show results
-                var resultsText = $"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
+                var resultsText = /*$"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}"*/$"CLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
                 var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
 
@@ -171,22 +173,52 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //await MainDialog.ClusteringAsync();
         }
 
-        private Attachment CreateAdaptiveCardAttachment()
+        public Attachment CreateAdaptiveCardAttachment()
         {
-            var cardResourcePath = "CoreBot.Cards.resultCard.json";
 
-            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
+            AdaptiveCard card = new AdaptiveCard("1.0");
+
+            // Specify speech for the card.  
+            card.Speak = "Here are your results!";
+
+            // Body content  
+            // Add text to the card.  
+            card.Body.Add(new AdaptiveTextBlock()
             {
-                using (var reader = new StreamReader(stream))
-                {
-                    var adaptiveCard = reader.ReadToEnd();
-                    return new Attachment()
-                    {
-                        ContentType = "application/vnd.microsoft.card.adaptive",
-                        Content = JsonConvert.DeserializeObject(adaptiveCard),
-                    };
-                }
-            }
+                Text = "Here are your results!",
+                Size = AdaptiveTextSize.Large,
+                Weight = AdaptiveTextWeight.Bolder
+            });
+
+            // Add text to the card.  
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"Extraversion: { PersonalDetailsDialog.PersonalDetails.Extraversion}"
+            });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"Agreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}"
+            });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"Conscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}"
+            });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"Neuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}"
+            });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"Openness: {PersonalDetailsDialog.PersonalDetails.Openness}"
+            });
+
+            // Create the attachment with adapative card.  
+            Attachment attachment = new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card
+            };
+            return attachment;
         }
     }
 }
