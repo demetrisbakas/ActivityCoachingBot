@@ -20,7 +20,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
     {
         private bool finished = false, finishedBefore = true;
         private string activeQuestion;
-        public static string temp = "test";
 
         public TopFiveDialog()
            : base(nameof(TopFiveDialog))
@@ -173,7 +172,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //await MainDialog.ClusteringAsync();
         }
 
-        public Attachment CreateAdaptiveCardAttachment()
+        private Attachment CreateAdaptiveCardAttachment()
         {
 
             AdaptiveCard card = new AdaptiveCard("1.0");

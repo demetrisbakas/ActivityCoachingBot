@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static Task<IDictionary<string, object>> ReadFromDb;
         public static Task<List<ClusterPersonalDetailsWithoutNull>> ClusteringData;
         public static Task<List<KeyValuePair<string, List<QuestionTopFive>>>> Questionnaires;
+        private static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
 
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
         public static FlightBookingRecognizer Get_luisRecognizer()
@@ -49,11 +51,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ILogger<MainDialog> logger)
+        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
             Logger = logger;
+            _conversationReferences = conversationReferences;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(bookingDialog);
@@ -556,5 +559,39 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         //    IQueryable<dynamic> familyQueryInSql = client.CreateDocumentQuery<dynamic>(UriFactory.CreateDocumentCollectionUri(cosmosDBDatabaseName, cosmosDBConteinerId), "SELECT * FROM c", queryOptions);
         //}
         //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static void AddConversationReference(Activity activity)
+        {
+            var conversationReference = activity.GetConversationReference();
+            _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
+        }
+
+        //protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        //{
+        //    AddConversationReference(turnContext.Activity as Activity);
+
+        //    // Echo back what the user said
+        //    await turnContext.SendActivityAsync(MessageFactory.Text($"You sent '{turnContext.Activity.Text}'"), cancellationToken);
+        //}
     }
 }

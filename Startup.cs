@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples.Bots;
 using Microsoft.BotBuilderSamples.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Concurrent;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -17,6 +19,9 @@ namespace Microsoft.BotBuilderSamples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Create a global hashset for our ConversationReferences
+            services.AddSingleton<ConcurrentDictionary<string, ConversationReference>>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Create the Bot Framework Adapter with error handling enabled.
