@@ -18,6 +18,7 @@ namespace Microsoft.BotBuilderSamples
         public enum Intent {
             //BookFlight,
             Cancel,
+            EnterPersonalDetails,
             //GetWeather,
             Greet,
             None

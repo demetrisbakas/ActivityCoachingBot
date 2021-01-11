@@ -12,6 +12,9 @@
     {
       "name": "Cancel"
     },
+    {
+      "name": "EnterPersonalDetails"
+    },
     //{
     //  "name": "GetWeather"
     //},

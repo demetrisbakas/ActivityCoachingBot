@@ -51,7 +51,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -63,6 +63,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(personalDetailsDialog);
             AddDialog(topFiveDialog);
             AddDialog(questionnaireChoiceDialog);
+            AddDialog(reenterDetailsDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
@@ -182,7 +183,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
                 //return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
 
-
+                case FlightBooking.Intent.EnterPersonalDetails:
+                    if (CheckDetails())
+                        return await stepContext.BeginDialogAsync(nameof(ReenterDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+                    else
+                        return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 
                 default:
                     // Catch all for unhandled intents
@@ -264,11 +269,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         public static async void WriteToDB(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // Sand to DB
+            // Send to DB
             var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
             try
             {
+                #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception e)
             {
@@ -519,7 +526,14 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return questionnaireList;
         }
 
-
+        // Checks if personal details are already completed by the user
+        private bool CheckDetails() 
+        {
+            if (PersonalDetailsDialog.PersonalDetails.Name != null && PersonalDetailsDialog.PersonalDetails.Age != null && PersonalDetailsDialog.PersonalDetails.Sex != null)
+                return true;
+            else
+                return false;
+        }
 
 
         //

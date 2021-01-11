@@ -13,9 +13,9 @@ namespace Microsoft.BotBuilderSamples
     public class FlightBookingRecognizer : IRecognizer
     {
         // QnA stuff
-        string QnAKnowledgebaseId = "fa15132e-f5ee-4d77-b221-4612dc834c96";
-        string QnAEndpointKey = "e1f51738-0030-42fb-8acf-40ffcb8f48d1";
-        string QnAEndpointHostName = "https://activitycoachingbotqnaservice.azurewebsites.net/qnamaker";
+        private string QnAKnowledgebaseId = "fa15132e-f5ee-4d77-b221-4612dc834c96";
+        private string QnAEndpointKey = "e1f51738-0030-42fb-8acf-40ffcb8f48d1";
+        private string QnAEndpointHostName = "https://activitycoachingbotqnaservice.azurewebsites.net/qnamaker";
 
 
 

@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
     <PackageReference Include="Microsoft.ML" Version="1.5.0" />
     <PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.3.2" />
+    <PackageReference Include="NRules" Version="0.9.1" />
   </ItemGroup>
 
   <Import Project="PostDeployScripts\IncludeSources.targets" Condition="Exists('PostDeployScripts\IncludeSources.targets')" />

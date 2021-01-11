@@ -51,6 +51,9 @@ namespace Microsoft.BotBuilderSamples
             // Register the QuestionnaireChoiceDialog.
             services.AddSingleton<QuestionnaireChoiceDialog>();
 
+            // Register the QuestionnaireChoiceDialog.
+            services.AddSingleton<ReenterDetailsDialog>();
+
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
 
