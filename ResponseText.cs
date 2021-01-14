@@ -23,6 +23,13 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
         private readonly List<string> welcomeMessageList = new List<string>() { "What can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
+        private readonly List<string> smokerMessageList = new List<string>() { "Are you a smoker?" };
+        private readonly List<string> waterConsumptionMessageList = new List<string>() { "How many cups of water do you drink every day?" };
+        private readonly List<string> waterConsumptionRetryList = new List<string>() { "Can you repeat the number of cups please?" };
+        private readonly List<string> sleepMessageList = new List<string>() { "How many hours of sleep do you get every day?" };
+        private readonly List<string> sleepRetryList = new List<string>() { "Can you repeat the number of hours you sleep please?" };
+        private readonly List<string> physicalActivityMessageList = new List<string>() { "How many hours of physical excersise do you get every week?" };
+        private readonly List<string> physicalActivityRetryList = new List<string>() { "Can you repeat the number of hours you excersise please?" };
         private readonly List<string> reenterDetailsMessageList = new List<string>() { "You have already entered all of your personal details, would you like to change them?" };
 
 
@@ -80,6 +87,39 @@ namespace Microsoft.BotBuilderSamples
         public string AskSex()
         {
             return RandomiseList(sexQuestionList);
+        }
+
+        public string AskSmoker()
+        {
+            return RandomiseList(smokerMessageList);
+        }
+
+        public string AskWater()
+        {
+            return RandomiseList(waterConsumptionMessageList);
+        }
+
+        public string RetryWater()
+        {
+            return RandomiseList(waterConsumptionRetryList);
+        }
+        public string AskSleep()
+        {
+            return RandomiseList(sleepMessageList);
+        }
+
+        public string RetrySleep()
+        {
+            return RandomiseList(sleepRetryList);
+        }
+
+        public string AskPhysicalActivity()
+        {
+            return RandomiseList(physicalActivityMessageList);
+        }
+        public string RetryPhysycalActivity()
+        {
+            return RandomiseList(physicalActivityRetryList);
         }
 
         public string ChooseQuestionnaire()

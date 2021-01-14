@@ -170,7 +170,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (PersonalDetails.Smoker == null)
             {
-                var messageText = $"Are you a smoker?";
+                var messageText = MainDialog.Response.AskSmoker();
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
@@ -188,11 +188,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (PersonalDetails.WaterConsumption == null)
             {
-                var messageText = $"How many cups of water do you drink every day?";
+                var messageText = MainDialog.Response.AskWater();
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-                var retryText = $"Can you repeat the number of cups plrease?";
+                var retryText = MainDialog.Response.RetryWater();
                 var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryPromptText }, cancellationToken);
             }
             else
                 return await stepContext.NextAsync(PersonalDetails, cancellationToken);
@@ -208,11 +208,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (PersonalDetails.Sleep == null)
             {
-                var messageText = $"How many hours of sleep do you get every day?";
+                var messageText = MainDialog.Response.AskSleep();
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-                var retryText = $"Can you repeat the number of hours you sleep plrease?";
+                var retryText = MainDialog.Response.RetrySleep();
                 var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryPromptText }, cancellationToken);
             }
             else
                 return await stepContext.NextAsync(PersonalDetails, cancellationToken);
@@ -228,11 +228,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (PersonalDetails.PhysicalActivity == null)
             {
-                var messageText = $"How many hours of physical excersise do you get every week?";
+                var messageText = MainDialog.Response.AskPhysicalActivity();
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-                var retryText = $"Can you repeat the number of hours you excersise plrease?";
+                var retryText = MainDialog.Response.RetryPhysycalActivity();
                 var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryPromptText }, cancellationToken);
             }
             else
                 return await stepContext.NextAsync(PersonalDetails, cancellationToken);
@@ -268,7 +268,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Sand to DB
             MainDialog.WriteToDB(stepContext, cancellationToken);
 
-            var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nSmoker: {PersonalDetails.Smoker}\n\nWater Consumption: {PersonalDetails.WaterConsumption} per day\n\nSleep: {PersonalDetails.Sleep} hours per day\n\nPhysical Activity: {PersonalDetails.PhysicalActivity} hours per week\n\nIs this correct?";
+            var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nSmoker: {PersonalDetails.Smoker}\n\nWater Consumption: {PersonalDetails.WaterConsumption} cups per day\n\nSleep: {PersonalDetails.Sleep} hours per day\n\nPhysical Activity: {PersonalDetails.PhysicalActivity} hours per week\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
             if (!finished)
