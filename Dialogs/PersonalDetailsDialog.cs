@@ -40,6 +40,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             AddDialog(new TextPrompt(nameof(TextPrompt), TextPromptValidatorAsync));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
+            AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>)));
             AddDialog(new DateResolverDialog());
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)/*, ChoicePromptValidatorAsync*/));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
@@ -47,6 +48,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 NameStepAsync,
                 AgeStepAsync,
                 SexStepAsync,
+                SmokerStepAsync,
+                WaterStepAsync,
+                SleepStepAsync,
+                PhysicalActivityStepAsync,
                 ConfirmStepAsync,
                 FinalStepAsync,
             }));
@@ -155,8 +160,89 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return await stepContext.NextAsync(PersonalDetails.Sex, cancellationToken);
         }
 
+        private async Task<DialogTurnResult> SmokerStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (PersonalDetails.Sex == null)
+                PersonalDetails.Sex = ((FoundChoice)stepContext.Result).Value;
+
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
+
+            if (PersonalDetails.Smoker == null)
+            {
+                var messageText = $"Are you a smoker?";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+            else
+                return await stepContext.NextAsync(PersonalDetails, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> WaterStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (PersonalDetails.Smoker == null)
+                PersonalDetails.Smoker = (bool)stepContext.Result;
+
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
+
+            if (PersonalDetails.WaterConsumption == null)
+            {
+                var messageText = $"How many cups of water do you drink every day?";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                var retryText = $"Can you repeat the number of cups plrease?";
+                var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+            else
+                return await stepContext.NextAsync(PersonalDetails, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> SleepStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (PersonalDetails.WaterConsumption == null)
+                PersonalDetails.WaterConsumption = (int)stepContext.Result;
+
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
+
+            if (PersonalDetails.Sleep == null)
+            {
+                var messageText = $"How many hours of sleep do you get every day?";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                var retryText = $"Can you repeat the number of hours you sleep plrease?";
+                var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+            else
+                return await stepContext.NextAsync(PersonalDetails, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> PhysicalActivityStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (PersonalDetails.Sleep == null)
+                PersonalDetails.Sleep = (int)stepContext.Result;
+
+            // Sand to DB
+            MainDialog.WriteToDB(stepContext, cancellationToken);
+
+            if (PersonalDetails.PhysicalActivity == null)
+            {
+                var messageText = $"How many hours of physical excersise do you get every week?";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                var retryText = $"Can you repeat the number of hours you excersise plrease?";
+                var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+            else
+                return await stepContext.NextAsync(PersonalDetails, cancellationToken);
+        }
+
         private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            if (PersonalDetails.PhysicalActivity == null)
+                PersonalDetails.PhysicalActivity = (int)stepContext.Result;
+
             //PersonalDetails = (PersonalDetails)stepContext.Options;
 
             //if(Regex.IsMatch((string)stepContext.Result, "female", RegexOptions.IgnoreCase))
@@ -167,8 +253,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //    PersonalDetails.Sex = null;
 
 
-            if (PersonalDetails.Sex == null)
-                PersonalDetails.Sex = ((FoundChoice)stepContext.Result).Value;
+            //if (PersonalDetails.Sex == null)
+            //    PersonalDetails.Sex = ((FoundChoice)stepContext.Result).Value;
 
             //    //PersonalDetails.Sex = stepContext.Result.ToString();
             //    PersonalDetails.Sex = char.ToUpper(stepContext.Context.Activity.Text[0]) + stepContext.Context.Activity.Text.Substring(1).ToLower();
@@ -182,7 +268,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Sand to DB
             MainDialog.WriteToDB(stepContext, cancellationToken);
 
-            var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nIs this correct?";
+            var messageText = $"Please confirm, this is your personal info:\n\nName: {PersonalDetails.Name}\n\nAge: {PersonalDetails.Age}\n\nSex: {PersonalDetails.Sex}\n\nSmoker: {PersonalDetails.Smoker}\n\nWater Consumption: {PersonalDetails.WaterConsumption} per day\n\nSleep: {PersonalDetails.Sleep} hours per day\n\nPhysical Activity: {PersonalDetails.PhysicalActivity} hours per week\n\nIs this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
             if (!finished)
@@ -229,8 +315,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             else
             {
                 //PersonalDetails = new PersonalDetails();
-                PersonalDetails.Name = PersonalDetails.Sex = null;
-                PersonalDetails.Age = null;
+                //PersonalDetails.Name = PersonalDetails.Sex = null;
+                //PersonalDetails.Age = null;
+                ClearDetails();
 
                 return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetails, cancellationToken);
             }
@@ -347,5 +434,17 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         //        return await Task.FromResult(false);
         //}
+
+        // Clears personal details
+        public static void ClearDetails()
+        {
+            PersonalDetails.Name = null;
+            PersonalDetails.Age = null;
+            PersonalDetails.Sex = null;
+            PersonalDetails.Smoker = null;
+            PersonalDetails.WaterConsumption = null;
+            PersonalDetails.Sleep = null;
+            PersonalDetails.PhysicalActivity = null;
+        }
     }
 }

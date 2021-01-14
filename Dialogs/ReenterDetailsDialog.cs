@@ -27,7 +27,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> AskQuestionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var messageText = $"You have already entered all of your personal details, would you like to change them?";
+            var messageText = MainDialog.Response.ReenterDetailsMessage();
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
@@ -36,19 +36,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             if ((bool)stepContext.Result)
             {
-                ClearDetails();
+                PersonalDetailsDialog.ClearDetails();
                 return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
             else
                 return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
-        }
-
-        // Clears personal details
-        private void ClearDetails()
-        {
-            PersonalDetailsDialog.PersonalDetails.Name = null;
-            PersonalDetailsDialog.PersonalDetails.Age = null;
-            PersonalDetailsDialog.PersonalDetails.Sex = null;
         }
     }
 }

@@ -529,7 +529,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         // Checks if personal details are already completed by the user
         private bool CheckDetails() 
         {
-            if (PersonalDetailsDialog.PersonalDetails.Name != null && PersonalDetailsDialog.PersonalDetails.Age != null && PersonalDetailsDialog.PersonalDetails.Sex != null)
+            if (PersonalDetailsDialog.PersonalDetails.Name != null && PersonalDetailsDialog.PersonalDetails.Age != null && PersonalDetailsDialog.PersonalDetails.Sex != null && PersonalDetailsDialog.PersonalDetails.Smoker != null && PersonalDetailsDialog.PersonalDetails.WaterConsumption != null && PersonalDetailsDialog.PersonalDetails.Sleep != null && PersonalDetailsDialog.PersonalDetails.PhysicalActivity != null)
                 return true;
             else
                 return false;

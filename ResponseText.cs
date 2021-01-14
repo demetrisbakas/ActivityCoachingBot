@@ -23,6 +23,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
         private readonly List<string> welcomeMessageList = new List<string>() { "What can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
+        private readonly List<string> reenterDetailsMessageList = new List<string>() { "You have already entered all of your personal details, would you like to change them?" };
 
 
         public List<KeyValuePair<string, List<QuestionTopFive>>> Questionnaires { get; set; } = new List<KeyValuePair<string, List<QuestionTopFive>>>();
@@ -94,6 +95,11 @@ namespace Microsoft.BotBuilderSamples
         public string WelcomeMessage()
         {
             return RandomiseList(welcomeMessageList);
+        }
+
+        public string ReenterDetailsMessage()
+        {
+            return RandomiseList(reenterDetailsMessageList);
         }
 
         public async Task<string> TipMessageAsync()

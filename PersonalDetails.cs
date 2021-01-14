@@ -16,6 +16,18 @@ namespace Microsoft.BotBuilderSamples
 
         public string Sex { get; set; }
 
+        public bool? Smoker { get; set; }
+
+        // Measured in cups
+        public int? WaterConsumption { get; set; }
+
+        // Measured in hours per day
+        public int? Sleep { get; set; }
+
+        // Measured in hours per week
+        public int? PhysicalActivity { get; set; }
+
+
         public float? Extraversion { get; set; } 
         public float? Agreeableness { get; set; }
         public float? Conscientiousness { get; set; }
