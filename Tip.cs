@@ -9,5 +9,10 @@ namespace CoreBot
     {
         public string TipMessage { get; set; }
         public int Cluster { get; set; }
+
+        public bool? Smoker { get; set; }
+        public bool? LowWaterConsumption { get; set; }
+        public bool? LowSleep { get; set; }
+        public bool? LowPhysicalActivity { get; set; }
     }
 }
