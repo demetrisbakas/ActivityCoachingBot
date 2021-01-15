@@ -145,7 +145,10 @@ namespace Microsoft.BotBuilderSamples
         public async Task<string> TipMessageAsync()
         {
             var tipList = await MainDialog.QueryTipsAsync((int)PersonalDetailsDialog.PersonalDetails.Cluster);
-            return RandomiseList(tipList);
+
+            // Rules engine here
+
+            return RandomiseList(tipList.Select(l => l.TipMessage).ToList());
         }
 
         //public async void QuestionnairesAsync()

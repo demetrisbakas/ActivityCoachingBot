@@ -403,7 +403,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return RemoveNullValues(detailsList);
         }
 
-        public static async Task<List<string>> QueryTipsAsync(int cluster)
+        public static async Task<List<Tip>> QueryTipsAsync(int cluster)
         {
             var sqlQueryText = "SELECT * FROM c WHERE c.Cluster=" + cluster.ToString();
 
@@ -421,14 +421,14 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             FeedIterator<Tip> queryResultSetIterator = container.GetItemQueryIterator<Tip>(queryDefinition);
 
-            List<string> tipList = new List<string>();
+            List<Tip> tipList = new List<Tip>();
 
             while (queryResultSetIterator.HasMoreResults)
             {
                 Azure.Cosmos.FeedResponse<Tip> currentResultSet = await queryResultSetIterator.ReadNextAsync();
                 foreach (Tip details in currentResultSet)
                 {
-                    tipList.Add(details.TipMessage);
+                    tipList.Add(details);
                     //Console.WriteLine("\tRead {0}\n", family);
                 }
             }
