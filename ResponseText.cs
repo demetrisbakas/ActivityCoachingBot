@@ -1,5 +1,7 @@
 ﻿using CoreBot;
 using Microsoft.BotBuilderSamples.Dialogs;
+using NRules;
+using NRules.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,8 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> physicalActivityMessageList = new List<string>() { "How many hours of physical excersise do you get every week?" };
         private readonly List<string> physicalActivityRetryList = new List<string>() { "Can you repeat the number of hours you excersise please?" };
         private readonly List<string> reenterDetailsMessageList = new List<string>() { "You have already entered all of your personal details, would you like to change them?" };
+
+        public List<Tip> TipList { get; set; } = new List<Tip>();
 
 
         public List<KeyValuePair<string, List<QuestionTopFive>>> Questionnaires { get; set; } = new List<KeyValuePair<string, List<QuestionTopFive>>>();
@@ -144,11 +148,41 @@ namespace Microsoft.BotBuilderSamples
 
         public async Task<string> TipMessageAsync()
         {
-            var tipList = await MainDialog.QueryTipsAsync((int)PersonalDetailsDialog.PersonalDetails.Cluster);
+            TipList = new List<Tip>();
+            var tipList = await MainDialog.QueryTipsAsync();
+            //TipList = tipList;
 
             // Rules engine here
+            //Load rules
+            var repository = new RuleRepository();
+            repository.Load(x => x.From(typeof(TipChooseRule).Assembly));
 
-            return RandomiseList(tipList.Select(l => l.TipMessage).ToList());
+            //Compile rules
+            var factory = repository.Compile();
+
+            //Create a working session
+            var session = factory.CreateSession();
+
+            //Load domain model
+            //var customer = new Customer("John Doe") { IsPreferred = true };
+            //var order1 = new Order(123456, customer, 2, 25.0);
+            //var order2 = new Order(123457, customer, 1, 100.0);
+
+            //Insert facts into rules engine's memory
+            //session.Insert(customer);
+            //session.Insert(order1);
+            //session.Insert(order2);
+            session.Insert(PersonalDetailsDialog.PersonalDetails);
+            foreach (Tip obj in tipList)
+            {
+                session.Insert(obj);
+            }
+
+            //Start match/resolve/act cycle
+            session.Fire();
+
+
+            return RandomiseList(TipList.Select(l => l.TipMessage).ToList());
         }
 
         //public async void QuestionnairesAsync()

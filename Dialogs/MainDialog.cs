@@ -403,11 +403,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return RemoveNullValues(detailsList);
         }
 
-        public static async Task<List<Tip>> QueryTipsAsync(int cluster)
-        {
-            var sqlQueryText = "SELECT * FROM c WHERE c.Cluster=" + cluster.ToString();
+        //public static async Task<List<Tip>> QueryTipsAsync(int cluster)
+        //{
+        //    var sqlQueryText = "SELECT * FROM c WHERE c.Cluster=" + cluster.ToString();
 
-            //Console.WriteLine("Running query: {0}\n", sqlQueryText);
+        public static async Task<List<Tip>> QueryTipsAsync()
+        {
+            var sqlQueryText = "SELECT * FROM c";
+
+                //Console.WriteLine("Running query: {0}\n", sqlQueryText);
 
             QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
 
