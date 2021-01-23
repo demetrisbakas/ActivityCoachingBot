@@ -1,0 +1,28 @@
+[
+    {
+        "TipMessage": "Stop smoking",
+        "Smoker": true
+    },
+    {
+        "TipMessage": "Drink more water",
+        "LowWaterConsumption": true
+    },
+    {
+        "TipMessage": "Take a nap",
+        "LowSleep": true
+    },
+    {
+        "TipMessage": "Exercise more",
+        "LowPhysicalActivity": true
+    },
+    {
+        "TipMessage": "Exercise and rest",
+        "LowSleep": true,
+        "LowPhysicalActivity": true
+    },
+    {
+        "TipMessage": "Instead of smoking, drink some water",
+        "Smoker": true,
+        "LowWaterConsumption": true
+    }
+]
