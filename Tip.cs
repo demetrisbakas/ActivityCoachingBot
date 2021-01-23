@@ -8,7 +8,7 @@ namespace CoreBot
     public class Tip
     {
         public string TipMessage { get; set; }
-        public int Cluster { get; set; }
+        public int? Cluster { get; set; }
 
         public bool? Smoker { get; set; }
         public bool? LowWaterConsumption { get; set; }

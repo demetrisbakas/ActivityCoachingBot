@@ -23,7 +23,16 @@ namespace CoreBot
 
             When()
                 .Match<PersonalDetails>(() => personalDetails)
-                .Query(() => tips, x => x.Match<Tip>(o => o.Cluster == personalDetails.Cluster)
+                // Cluster rule
+                .Query(() => tips, x => x.Match<Tip>(o => o.Cluster == personalDetails.Cluster || o.Cluster == null,
+                    // Smoker rule
+                    o => o.Smoker == personalDetails.Smoker || o.Smoker == null,
+                    // Low sleep rule
+                    o => (o.LowSleep == true && personalDetails.Sleep <= lowSleepThreshold) || o.LowSleep == null,
+                    // Low physical activity rule
+                    o => (o.LowPhysicalActivity == true && personalDetails.PhysicalActivity <= lowPhysicalActivityThreshold) || o.LowPhysicalActivity == null,
+                    // Low water consumption rule
+                    o => (o.LowWaterConsumption == true && personalDetails.WaterConsumption <= lowWaterConsumption) || o.LowWaterConsumption == null)
                     .Collect()
                     .Where(c => c.Any()));
 
@@ -33,8 +42,6 @@ namespace CoreBot
 
         private static void AddTips(IEnumerable<Tip> tips)
         {
-            //MainDialog.Response.TipList.Add(tip);
-
             //foreach (var tip in tips)
             //{
             //    MainDialog.Response.TipList.Add(tip);
