@@ -6,6 +6,9 @@
   "culture": "en-us",
   "tokenizerVersion": "1.0.0",
   "intents": [
+    {
+      "name": "AnswerQuestionnaires"
+    },
     //{
     //  "name": "BookFlight"
     //},

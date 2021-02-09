@@ -34,14 +34,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private const string cosmosDBConteinerId = "bot-storage";
         private const string cosmosDBConteinerIdTips = "tips";
         private const string cosmosDBConteinerIdQuestionnaires = "questionnaires";
-        private static FlightBookingRecognizer _luisRecognizer;
+
+        private static ConnectionRecognizer _luisRecognizer;
         public static Task<IDictionary<string, object>> ReadFromDb;
         public static Task<List<ClusterPersonalDetailsWithoutNull>> ClusteringData;
         public static Task<List<KeyValuePair<string, List<QuestionTopFive>>>> Questionnaires;
         private static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
 
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
-        public static FlightBookingRecognizer Get_luisRecognizer()
+        public static ConnectionRecognizer Get_luisRecognizer()
         {
             return _luisRecognizer;
         }
@@ -51,7 +52,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, BookingDialog bookingDialog, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -59,7 +60,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             _conversationReferences = conversationReferences;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(bookingDialog);
             AddDialog(personalDetailsDialog);
             AddDialog(topFiveDialog);
             AddDialog(questionnaireChoiceDialog);
@@ -111,12 +111,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (!_luisRecognizer.IsConfigured)
             {
-                // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
-                return await stepContext.BeginDialogAsync(nameof(BookingDialog), new BookingDetails(), cancellationToken);
+                // LUIS is not configured, we just run the PersonalDetailsDialog path with an empty BookingDetailsInstance.
+                return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), new BookingDetails(), cancellationToken);
             }
 
             // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
-            var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+            var luisResult = await _luisRecognizer.RecognizeAsync<LuisModel>(stepContext.Context, cancellationToken);
             switch (luisResult.TopIntent().intent)
             {
                 //case FlightBooking.Intent.BookFlight:
@@ -141,7 +141,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 //    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
                 //    break;
 
-                case FlightBooking.Intent.Greet:
+                case LuisModel.Intent.AnswerQuestionnaires:
+                    return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+
+                case LuisModel.Intent.Greet:
                     // Deatails of the user
                     // IMPORTANT Wipes the data of the user
                     //PersonalDetailsDialog.PersonalDetails = new PersonalDetails()
@@ -179,11 +182,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     //    Sex = luisResult.TravelDate,
                     //};
 
-                    // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
+                    // Run the PersonalDetailsDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
                 //return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
 
-                case FlightBooking.Intent.EnterPersonalDetails:
+                case LuisModel.Intent.EnterPersonalDetails:
                     if (CheckDetails())
                         return await stepContext.BeginDialogAsync(nameof(ReenterDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
                     else
@@ -402,10 +405,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             return RemoveNullValues(detailsList);
         }
-
-        //public static async Task<List<Tip>> QueryTipsAsync(int cluster)
-        //{
-        //    var sqlQueryText = "SELECT * FROM c WHERE c.Cluster=" + cluster.ToString();
 
         public static async Task<List<Tip>> QueryTipsAsync()
         {

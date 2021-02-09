@@ -11,11 +11,12 @@ using Microsoft.Bot.Builder.AI.Luis;
 
 namespace Microsoft.BotBuilderSamples
 {
-    public partial class FlightBooking: IRecognizerConvert
+    public partial class LuisModel: IRecognizerConvert
     {
         public string Text;
         public string AlteredText;
         public enum Intent {
+            AnswerQuestionnaires,
             //BookFlight,
             Cancel,
             EnterPersonalDetails,
@@ -80,7 +81,7 @@ namespace Microsoft.BotBuilderSamples
 
         public void Convert(dynamic result)
         {
-            var app = JsonConvert.DeserializeObject<FlightBooking>(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            var app = JsonConvert.DeserializeObject<LuisModel>(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             Text = app.Text;
             AlteredText = app.AlteredText;
             Intents = app.Intents;

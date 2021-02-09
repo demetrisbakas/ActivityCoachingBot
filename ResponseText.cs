@@ -24,7 +24,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> sexQuestionList = new List<string>() { "What is your sex?", "Are you a male or a female?" };
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
-        private readonly List<string> welcomeMessageList = new List<string>() { "What can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
+        private readonly List<string> welcomeMessageList = new List<string>() { "Hey I'm a bot, what can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
         private readonly List<string> smokerMessageList = new List<string>() { "Are you a smoker?" };
         private readonly List<string> waterConsumptionMessageList = new List<string>() { "How many cups of water do you drink every day?" };
         private readonly List<string> waterConsumptionRetryList = new List<string>() { "Can you repeat the number of cups please?" };
@@ -38,19 +38,19 @@ namespace Microsoft.BotBuilderSamples
 
 
         public List<KeyValuePair<string, List<QuestionTopFive>>> Questionnaires { get; set; } = new List<KeyValuePair<string, List<QuestionTopFive>>>();
-        public List<QuestionTopFive> questionnaire = new List<QuestionTopFive>();
+        //public List<QuestionTopFive> questionnaire = new List<QuestionTopFive>();
 
 
         public ResponseText()
         {
             // Populate questionnaire
-            questionnaire.Add(new QuestionTopFive("Is talkative", Extraversion));
-            questionnaire.Add(new QuestionTopFive("Does a thorough job", Agreeableness, true));
-            questionnaire.Add(new QuestionTopFive("Is depressed, blue", Conscientiousness));
-            questionnaire.Add(new QuestionTopFive("Is original, comes up with new ideas", Neuroticism));
-            questionnaire.Add(new QuestionTopFive("Is reserved", Openness));
+            //questionnaire.Add(new QuestionTopFive("Is talkative", Extraversion));
+            //questionnaire.Add(new QuestionTopFive("Does a thorough job", Agreeableness, true));
+            //questionnaire.Add(new QuestionTopFive("Is depressed, blue", Conscientiousness));
+            //questionnaire.Add(new QuestionTopFive("Is original, comes up with new ideas", Neuroticism));
+            //questionnaire.Add(new QuestionTopFive("Is reserved", Openness));
 
-            Questionnaires.Add(new KeyValuePair<string, List<QuestionTopFive>>("Big Five", questionnaire));
+            //Questionnaires.Add(new KeyValuePair<string, List<QuestionTopFive>>("Big Five", questionnaire));
         }
 
         private string RandomiseList(List<string> inputList)
@@ -150,35 +150,26 @@ namespace Microsoft.BotBuilderSamples
         {
             TipList = new List<Tip>();
             var tipList = await MainDialog.QueryTipsAsync();
-            //TipList = tipList;
 
             // Rules engine here
-            //Load rules
+            // Load rules
             var repository = new RuleRepository();
             repository.Load(x => x.From(typeof(TipChooseRule).Assembly));
 
-            //Compile rules
+            // Compile rules
             var factory = repository.Compile();
 
-            //Create a working session
+            // Create a working session
             var session = factory.CreateSession();
 
-            //Load domain model
-            //var customer = new Customer("John Doe") { IsPreferred = true };
-            //var order1 = new Order(123456, customer, 2, 25.0);
-            //var order2 = new Order(123457, customer, 1, 100.0);
-
-            //Insert facts into rules engine's memory
-            //session.Insert(customer);
-            //session.Insert(order1);
-            //session.Insert(order2);
+            // Insert facts into rules engine's memory
             session.Insert(PersonalDetailsDialog.PersonalDetails);
             foreach (Tip obj in tipList)
             {
                 session.Insert(obj);
             }
 
-            //Start match/resolve/act cycle
+            // Start match/resolve/act cycle
             session.Fire();
 
 

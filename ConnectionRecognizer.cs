@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder.AI.QnA;
 
 namespace Microsoft.BotBuilderSamples
 {
-    public class FlightBookingRecognizer : IRecognizer
+    public class ConnectionRecognizer : IRecognizer
     {
         // QnA stuff
         private string QnAKnowledgebaseId = "fa15132e-f5ee-4d77-b221-4612dc834c96";
@@ -21,7 +21,7 @@ namespace Microsoft.BotBuilderSamples
 
         private readonly LuisRecognizer _recognizer;
 
-        public FlightBookingRecognizer(IConfiguration configuration)
+        public ConnectionRecognizer(IConfiguration configuration)
         {
             var luisIsConfigured = !string.IsNullOrEmpty(configuration["LuisAppId"]) && !string.IsNullOrEmpty(configuration["LuisAPIKey"]) && !string.IsNullOrEmpty(configuration["LuisAPIHostName"]);
             if (luisIsConfigured)

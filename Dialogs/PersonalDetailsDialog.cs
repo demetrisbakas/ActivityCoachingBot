@@ -26,7 +26,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         //static IConfiguration configuration;
         //private readonly FlightBookingRecognizer _luisRecognizer = new FlightBookingRecognizer(configuration);
         //
-        private FlightBooking luisResult;
+        private LuisModel luisResult;
         private bool finished = false;
 
         private enum Validator
@@ -336,7 +336,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             switch (promptContext.Options.Validations != null ? (Validator)promptContext.Options.Validations : (Validator)(-1))
             {
                 case Validator.Name:
-                    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
+                    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<LuisModel>(promptContext.Context, cancellationToken);
                     PersonalDetails.Name = (luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null);
 
                     if (PersonalDetails.Name == null)
@@ -347,7 +347,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 case Validator.Age:
 
 
-                    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<FlightBooking>(promptContext.Context, cancellationToken);
+                    luisResult = await MainDialog.Get_luisRecognizer().RecognizeAsync<LuisModel>(promptContext.Context, cancellationToken);
                     //PersonalDetails.Age = (luisResult.Entities.age != null ? luisResult.Entities.age[0].Number.ToString() : Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value);
                     if (luisResult.Entities.age != null)
                         PersonalDetails.Age = (int?)luisResult.Entities.age[0].Number;
