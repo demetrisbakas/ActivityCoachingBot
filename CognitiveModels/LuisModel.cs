@@ -16,6 +16,7 @@ namespace Microsoft.BotBuilderSamples
         public string Text;
         public string AlteredText;
         public enum Intent {
+            AddQuestionnairesOrTips,
             AnswerQuestionnaires,
             //BookFlight,
             Cancel,

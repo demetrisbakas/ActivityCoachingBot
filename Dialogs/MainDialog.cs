@@ -141,6 +141,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 //    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
                 //    break;
 
+                case LuisModel.Intent.AddQuestionnairesOrTips:
+                    // Change to new dialog
+                    return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+
                 case LuisModel.Intent.AnswerQuestionnaires:
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 

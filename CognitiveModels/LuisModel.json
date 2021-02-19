@@ -7,6 +7,9 @@
   "tokenizerVersion": "1.0.0",
   "intents": [
     {
+      "name": "AddQuestionnairesOrTips"
+    },
+    {
       "name": "AnswerQuestionnaires"
     },
     //{
