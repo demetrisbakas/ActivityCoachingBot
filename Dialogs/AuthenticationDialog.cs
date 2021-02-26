@@ -1,5 +1,4 @@
-﻿using AdaptiveCards;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using System;
@@ -21,7 +20,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 AuthenticateAsync,
-                FinalStepAsync,
+                FinalStepAsync
             }));
 
             // The initial child Dialog to run.
@@ -39,14 +38,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             if (password == stepContext.Result.ToString())
             {
-                return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(UploadTipsOrQuestionnairesDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
             else
             {
                 var messageText = MainDialog.Response.WrongPassword();
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
                 await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-                // Change to new dialog
                 return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
         }

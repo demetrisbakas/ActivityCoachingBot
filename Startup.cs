@@ -42,6 +42,9 @@ namespace Microsoft.BotBuilderSamples
             // The AuthenticationDialog that will be run by the bot.
             services.AddSingleton<AuthenticationDialog>();
 
+            // The UploadTipsOrQuestionnairesDialog that will be run by the bot.
+            services.AddSingleton<UploadTipsOrQuestionnairesDialog>();
+
             // Register the PersonalDetailsDialog.
             services.AddSingleton<PersonalDetailsDialog>();
 
