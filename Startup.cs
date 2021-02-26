@@ -39,6 +39,9 @@ namespace Microsoft.BotBuilderSamples
             // Register LUIS recognizer
             services.AddSingleton<ConnectionRecognizer>();
 
+            // The AuthenticationDialog that will be run by the bot.
+            services.AddSingleton<AuthenticationDialog>();
+
             // Register the PersonalDetailsDialog.
             services.AddSingleton<PersonalDetailsDialog>();
 

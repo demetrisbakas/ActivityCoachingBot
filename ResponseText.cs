@@ -33,6 +33,8 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> physicalActivityMessageList = new List<string>() { "How many hours of physical excersise do you get every week?" };
         private readonly List<string> physicalActivityRetryList = new List<string>() { "Can you repeat the number of hours you excersise please?" };
         private readonly List<string> reenterDetailsMessageList = new List<string>() { "You have already entered all of your personal details, would you like to change them?" };
+        private readonly List<string> askPasswordList = new List<string>() { "Please input your passphrase" };
+        private readonly List<string> wrongPasswordList = new List<string>() { "Wrong Passphrase" , "Your passphrase appears to be wrong" };
 
         public List<Tip> TipList { get; set; } = new List<Tip>();
 
@@ -144,6 +146,16 @@ namespace Microsoft.BotBuilderSamples
         public string ReenterDetailsMessage()
         {
             return RandomiseList(reenterDetailsMessageList);
+        }
+
+        public string AskPassword()
+        {
+            return RandomiseList(askPasswordList);
+        }
+
+        public string WrongPassword()
+        {
+            return RandomiseList(wrongPasswordList);
         }
 
         public async Task<string> TipMessageAsync()

@@ -74,8 +74,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 MainDialog.WriteToDB(stepContext, cancellationToken);
 
-
-                // Test
                 var resultCard = CreateAdaptiveCardAttachment();
                 var response = MessageFactory.Attachment(resultCard/*, ssml: "Here are your results!"*/);
                 await stepContext.Context.SendActivityAsync(response, cancellationToken);
