@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,32 +34,32 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> InterruptAsync(DialogContext innerDc, CancellationToken cancellationToken)
         {
-            if (innerDc.Context.Activity.Type == ActivityTypes.Message)
+            if (innerDc.Context.Activity.Type == ActivityTypes.Message && innerDc.Context.Activity.Text != null)
             {
-                var text = innerDc.Context.Activity.Text.ToLowerInvariant();
+                    var text = innerDc.Context.Activity.Text.ToLowerInvariant();
 
-                switch (text)
-                {
-                    case "help":
-                    case "?":
-                        var helpMessage = MessageFactory.Text(HelpMsgText, HelpMsgText, InputHints.ExpectingInput);
-                        await innerDc.Context.SendActivityAsync(helpMessage, cancellationToken);
-                        return new DialogTurnResult(DialogTurnStatus.Waiting);
+                    switch (text)
+                    {
+                        case "help":
+                        case "?":
+                            var helpMessage = MessageFactory.Text(HelpMsgText, HelpMsgText, InputHints.ExpectingInput);
+                            await innerDc.Context.SendActivityAsync(helpMessage, cancellationToken);
+                            return new DialogTurnResult(DialogTurnStatus.Waiting);
 
-                    case "exit":
-                    case "cancel":
-                    case "quit":
+                        case "exit":
+                        case "cancel":
+                        case "quit":
+                            var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
+                            await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
+                            return await innerDc.CancelAllDialogsAsync(cancellationToken);
+                    }
+
+                    if (Regex.IsMatch(text, "exit", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "cancel", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "quit", RegexOptions.IgnoreCase))
+                    {
                         var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
                         await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
                         return await innerDc.CancelAllDialogsAsync(cancellationToken);
-                }
-
-                if (Regex.IsMatch(text, "exit", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "cancel", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "quit", RegexOptions.IgnoreCase))
-                {
-                    var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
-                    await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
-                    return await innerDc.CancelAllDialogsAsync(cancellationToken);
-                }
+                    }
             }
 
             return null;

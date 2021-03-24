@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Cards\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.8.0" />
