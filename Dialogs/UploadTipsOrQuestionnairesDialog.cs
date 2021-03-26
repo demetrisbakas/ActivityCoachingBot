@@ -39,8 +39,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
             //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
-            
-
             return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = uploadChoice, RetryPrompt = retryPromptText, Style = ListStyle.HeroCard }, cancellationToken);
         }
 

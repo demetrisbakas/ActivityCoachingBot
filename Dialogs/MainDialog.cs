@@ -277,6 +277,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             DatabaseId = cosmosDBDatabaseName,
         });
 
+        // Create Cosmos DB Storage.  
+        private static readonly CosmosDbPartitionedStorage CosmosDBTipQuery = new CosmosDbPartitionedStorage(new CosmosDbPartitionedStorageOptions
+        {
+            AuthKey = cosmosDBKey,
+            ContainerId = cosmosDBConteinerIdTips,
+            CosmosDbEndpoint = cosmosServiceEndpoint,
+            DatabaseId = cosmosDBDatabaseName,
+        });
+
         public static async void WriteToDB(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Send to DB
@@ -285,6 +294,28 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 CosmosDBQuery.WriteAsync(changes, cancellationToken);
+                #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+            }
+        }
+
+        public static async void SendTipsToDB(List<Tip> input, WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Send to DB
+            var changes = new Dictionary<string, object>();
+            foreach (Tip obj in input)
+            {
+                changes.Add(obj.TipMessage, obj);
+            }
+
+            //var changes = new Dictionary<string, object>() { { PersonalDetailsDialog.PersonalDetails.UserID, PersonalDetailsDialog.PersonalDetails } };
+            try
+            {
+                #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                CosmosDBTipQuery.WriteAsync(changes, cancellationToken);
                 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception e)

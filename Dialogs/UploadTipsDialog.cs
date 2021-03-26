@@ -24,6 +24,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
            : base(nameof(UploadTipsDialog))
         {
             AddDialog(new AdaptiveCardPrompt(AdaptivePromptId));
+            AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 ShowCardAsync,
@@ -59,19 +60,22 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var result = JsonConvert.DeserializeObject<Tip>(stepContext.Result.ToString());
+            NumberOfTipsDialog.TipsUploadList.Add(result);
 
-            //if (password == result.Pass)
-            //{
-            //    return await stepContext.BeginDialogAsync(nameof(UploadTipsOrQuestionnairesDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
-            //}
-            //else
-            //{
-            //    var messageText = MainDialog.Response.WrongPassword();
-            //    var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-            //    await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-            //    return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
-            //}
-            return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
+            if (--NumberOfTipsDialog.NumberOfTips == 0)
+            {
+                // Send to database
+                MainDialog.SendTipsToDB(NumberOfTipsDialog.TipsUploadList, stepContext, cancellationToken);
+
+                // Show uploading message to the user
+                var MsgText = MainDialog.Response.UploadingDataMessage();
+                var promptMessage = MessageFactory.Text(MsgText, MsgText, InputHints.ExpectingInput);
+                await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+
+                return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
+            }
+            else
+                return await stepContext.BeginDialogAsync(nameof(UploadTipsDialog), NumberOfTipsDialog.NumberOfTips, cancellationToken);
         }
     }
 }

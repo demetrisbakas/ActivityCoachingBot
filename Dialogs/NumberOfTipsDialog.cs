@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder;
+﻿using CoreBot;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using System;
@@ -13,6 +14,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
     public class NumberOfTipsDialog : CancelAndHelpDialog
     {
         public static int NumberOfTips { get; set; }
+        public static List<Tip> TipsUploadList { get; set;} = new List<Tip>();
 
         public NumberOfTipsDialog()
            : base(nameof(NumberOfTipsDialog))
@@ -40,6 +42,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             NumberOfTips = (int)stepContext.Result;
+            TipsUploadList = new List<Tip>();
 
             return await stepContext.BeginDialogAsync(nameof(UploadTipsDialog), NumberOfTips, cancellationToken);
         }
