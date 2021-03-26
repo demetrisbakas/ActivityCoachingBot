@@ -21,10 +21,6 @@
       "id": "Cluster",
       "placeholder": "Enter the cluster number"
     },
-
-
-
-
     {
       "type": "Input.Toggle",
       "id": "Smoker",
@@ -49,62 +45,6 @@
       "title": "Low Physical Activity",
       "value": "false"
     }
-
-
-    //{
-    //  "type": "ColumnSet",
-    //  "separator": true,
-    //  "columns": [
-    //    {
-    //      "type": "Column",
-    //      "items": [
-    //        {
-    //          "type": "Input.Toggle",
-    //          "id": "Smoker",
-    //          "title": "Smoker",
-    //          "value": "false"
-    //        }
-    //      ],
-    //      "width": "auto"
-    //    },
-    //    {
-    //      "type": "Column",
-    //      "items": [
-    //        {
-    //          "type": "Input.Toggle",
-    //          "id": "LowWaterConsumption",
-    //          "title": "Low Water Consumption",
-    //          "value": "false"
-    //        }
-    //      ],
-    //      "width": "auto"
-    //    },
-    //    {
-    //      "type": "Column",
-    //      "items": [
-    //        {
-    //          "type": "Input.Toggle",
-    //          "id": "LowSleep",
-    //          "title": "Low Sleep",
-    //          "value": "false"
-    //        }
-    //      ],
-    //      "width": "auto"
-    //    },
-    //    {
-    //      "type": "Column",
-    //      "items": [
-    //        {
-    //          "type": "Input.Toggle",
-    //          "id": "LowPhysicalActivity",
-    //          "title": "Low Physical Activity",
-    //          "value": "false"
-    //        }
-    //      ],
-    //      "width": "auto"
-    //    }
-    //  ]
-    //}
   ],
   "actions": [
     {

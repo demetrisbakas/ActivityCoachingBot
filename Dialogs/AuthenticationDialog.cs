@@ -12,12 +12,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bot.AdaptiveCard.Prompt;
 using AdaptiveCardPromptSample.Welcome;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class AuthenticationDialog : CancelAndHelpDialog
     {
-        private const string password = "mypassword";
+        // Password is "mypassword"
+        private const string password = "34819d7beeabb9260a5c854bc85b3e44";
         static string AdaptivePromptId = "adaptive";
 
         public AuthenticationDialog()
@@ -63,7 +66,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             var result = JsonConvert.DeserializeObject<PassJson>(stepContext.Result.ToString());
 
-            if (password == result.Pass)
+            if (password == MD5Hash(result.Pass))
             {
                 return await stepContext.BeginDialogAsync(nameof(UploadTipsOrQuestionnairesDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
@@ -74,6 +77,19 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
                 return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
+        }
+
+        private static string MD5Hash(string input)
+        {
+            StringBuilder hash = new StringBuilder();
+            MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
+            byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(input));
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                hash.Append(bytes[i].ToString("x2"));
+            }
+            return hash.ToString();
         }
     }
 }
