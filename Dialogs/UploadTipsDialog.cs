@@ -12,23 +12,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bot.AdaptiveCard.Prompt;
 using AdaptiveCardPromptSample.Welcome;
+using CoreBot;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
-    public class AuthenticationDialog : CancelAndHelpDialog
+    public class UploadTipsDialog : CancelAndHelpDialog
     {
-        private const string password = "mypassword";
         static string AdaptivePromptId = "adaptive";
 
-        public AuthenticationDialog()
-           : base(nameof(AuthenticationDialog))
+        public UploadTipsDialog()
+           : base(nameof(UploadTipsDialog))
         {
             AddDialog(new AdaptiveCardPrompt(AdaptivePromptId));
-            //AddDialog(new TextPrompt(nameof(TextPrompt)));
-            //AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
-                AuthenticateAsync,
+                ShowCardAsync,
                 FinalStepAsync
             }));
 
@@ -36,9 +34,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private async Task<DialogTurnResult> AuthenticateAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> ShowCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var cardJson = PrepareCard.ReadCard("passphrase.json");
+            var cardJson = PrepareCard.ReadCard("tipCard.json");
 
             var cardAttachment = new Attachment()
             {
@@ -51,8 +49,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 Prompt = new Activity
                 {
                     Attachments = new List<Attachment>() { cardAttachment },
-                    Type = ActivityTypes.Message,
-                    //Text = "Enter your passphrase",
+                    Type = ActivityTypes.Message
                 }
             };
 
@@ -61,19 +58,20 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var result = JsonConvert.DeserializeObject<PassJson>(stepContext.Result.ToString());
+            var result = JsonConvert.DeserializeObject<Tip>(stepContext.Result.ToString());
 
-            if (password == result.Pass)
-            {
-                return await stepContext.BeginDialogAsync(nameof(UploadTipsOrQuestionnairesDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
-            }
-            else
-            {
-                var messageText = MainDialog.Response.WrongPassword();
-                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-                await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-                return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
-            }
+            //if (password == result.Pass)
+            //{
+            //    return await stepContext.BeginDialogAsync(nameof(UploadTipsOrQuestionnairesDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+            //}
+            //else
+            //{
+            //    var messageText = MainDialog.Response.WrongPassword();
+            //    var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+            //    await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            //    return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
+            //}
+            return await stepContext.EndDialogAsync(PersonalDetailsDialog.PersonalDetails, cancellationToken);
         }
     }
 }

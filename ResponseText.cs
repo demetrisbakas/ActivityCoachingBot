@@ -36,6 +36,8 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> askPasswordList = new List<string>() { "Please input your passphrase" };
         private readonly List<string> wrongPasswordList = new List<string>() { "Wrong Passphrase" , "Your passphrase appears to be wrong" };
         private readonly List<string> uploadTipsOrQuestionnairesList = new List<string>() { "What do you wish to upload?", "What would you like to upload?" };
+        private readonly List<string> enterNumberOfTipsList = new List<string>() { "How many tips would you like to upload?", "Enter the number of tips you would like to upload?" };
+        private readonly List<string> reenterNumberOfTipsList = new List<string>() { "Please enter a number bigger than 0"};
 
         public List<Tip> TipList { get; set; } = new List<Tip>();
 
@@ -162,6 +164,16 @@ namespace Microsoft.BotBuilderSamples
         public string UploadTipsOrQuestionnaires()
         {
             return RandomiseList(uploadTipsOrQuestionnairesList);
+        }
+
+        public string EnterNumberOfTips()
+        {
+            return RandomiseList(enterNumberOfTipsList);
+        }
+
+        public string ReenterNumberOfTips()
+        {
+            return RandomiseList(reenterNumberOfTipsList);
         }
 
         public async Task<string> TipMessageAsync()

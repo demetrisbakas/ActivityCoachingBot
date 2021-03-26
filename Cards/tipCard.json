@@ -1,0 +1,116 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Tip:"
+    },
+    {
+      "type": "Input.Text",
+      "id": "TipMessage",
+      "placeholder": "Write your tip here"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Cluster:"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Cluster",
+      "placeholder": "Enter the cluster number"
+    },
+
+
+
+
+    {
+      "type": "Input.Toggle",
+      "id": "Smoker",
+      "title": "Smoker",
+      "value": "false"
+    },
+    {
+      "type": "Input.Toggle",
+      "id": "LowWaterConsumption",
+      "title": "Low Water Consumption",
+      "value": "false"
+    },
+    {
+      "type": "Input.Toggle",
+      "id": "LowSleep",
+      "title": "Low Sleep",
+      "value": "false"
+    },
+    {
+      "type": "Input.Toggle",
+      "id": "LowPhysicalActivity",
+      "title": "Low Physical Activity",
+      "value": "false"
+    }
+
+
+    //{
+    //  "type": "ColumnSet",
+    //  "separator": true,
+    //  "columns": [
+    //    {
+    //      "type": "Column",
+    //      "items": [
+    //        {
+    //          "type": "Input.Toggle",
+    //          "id": "Smoker",
+    //          "title": "Smoker",
+    //          "value": "false"
+    //        }
+    //      ],
+    //      "width": "auto"
+    //    },
+    //    {
+    //      "type": "Column",
+    //      "items": [
+    //        {
+    //          "type": "Input.Toggle",
+    //          "id": "LowWaterConsumption",
+    //          "title": "Low Water Consumption",
+    //          "value": "false"
+    //        }
+    //      ],
+    //      "width": "auto"
+    //    },
+    //    {
+    //      "type": "Column",
+    //      "items": [
+    //        {
+    //          "type": "Input.Toggle",
+    //          "id": "LowSleep",
+    //          "title": "Low Sleep",
+    //          "value": "false"
+    //        }
+    //      ],
+    //      "width": "auto"
+    //    },
+    //    {
+    //      "type": "Column",
+    //      "items": [
+    //        {
+    //          "type": "Input.Toggle",
+    //          "id": "LowPhysicalActivity",
+    //          "title": "Low Physical Activity",
+    //          "value": "false"
+    //        }
+    //      ],
+    //      "width": "auto"
+    //    }
+    //  ]
+    //}
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit"
+
+    }
+  ]
+}

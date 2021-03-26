@@ -50,7 +50,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (answer == uploadChoice?[0]?.Value)
             {
                 // Change dialog
-                return await stepContext.BeginDialogAsync(nameof(QuestionnaireChoiceDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(NumberOfTipsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
             else
             {
