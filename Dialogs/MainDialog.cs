@@ -52,7 +52,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -68,6 +68,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(reenterDetailsDialog);
             AddDialog(numberOfTipsDialog);
             AddDialog(uploadTipsDialog);
+            AddDialog(nameOfQuestionnaireDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
