@@ -39,6 +39,9 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> enterNumberOfTipsList = new List<string>() { "How many tips would you like to upload?", "Enter the number of tips you would like to upload?" };
         private readonly List<string> reenterNumberOfTipsList = new List<string>() { "Please enter a number bigger than 0"};
         private readonly List<string> uploadingDataMessageList = new List<string>() { "Uploading your data..." };
+        private readonly List<string> enterNameOfQuestionnaireList = new List<string>() { "What is the title of your questionnaire?" };
+        private readonly List<string> enterNumberOfQuestionsList = new List<string>() { "How many questions does your questionnaire contain?" };
+        private readonly List<string> reenterNumberOfQuestionsList = new List<string>() { "Can you repeat the number of questions please?" };
 
         public List<Tip> TipList { get; set; } = new List<Tip>();
 
@@ -180,6 +183,21 @@ namespace Microsoft.BotBuilderSamples
         public string UploadingDataMessage()
         {
             return RandomiseList(uploadingDataMessageList);
+        }
+
+        public string EnterNameOfQuestionnaire()
+        {
+            return RandomiseList(enterNameOfQuestionnaireList);
+        }
+
+        public string EnterNumberOfQuestions()
+        {
+            return RandomiseList(enterNumberOfQuestionsList);
+        }
+
+        public string ReenterNumberOfQuestions()
+        {
+            return RandomiseList(reenterNumberOfQuestionsList);
         }
 
         public async Task<string> TipMessageAsync()

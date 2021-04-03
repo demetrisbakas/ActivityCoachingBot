@@ -52,7 +52,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, UploadQuestionnairesDialog uploadQuestionnairesDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -69,6 +69,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(numberOfTipsDialog);
             AddDialog(uploadTipsDialog);
             AddDialog(nameOfQuestionnaireDialog);
+            AddDialog(uploadQuestionnairesDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
@@ -287,6 +288,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             DatabaseId = cosmosDBDatabaseName,
         });
 
+        // Create Cosmos DB Storage.  
+        private static readonly CosmosDbPartitionedStorage CosmosDBQuestionnaireQuery = new CosmosDbPartitionedStorage(new CosmosDbPartitionedStorageOptions
+        {
+            AuthKey = cosmosDBKey,
+            ContainerId = cosmosDBConteinerIdQuestionnaires,
+            CosmosDbEndpoint = cosmosServiceEndpoint,
+            DatabaseId = cosmosDBDatabaseName,
+        });
+
         public static async void WriteToDB(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Send to DB
@@ -318,6 +328,24 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 CosmosDBTipQuery.WriteAsync(changes, cancellationToken);
                 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
+            }
+        }
+
+        public static async void SendQuestionnairesToDB(string name, List<QuestionTopFive> questions, WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Send to DB
+            var pair = new KeyValuePair<string, List<QuestionTopFive>>( name, questions );
+            var changes = new Dictionary<string, object>() { { name, pair } };
+
+            try
+            {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                CosmosDBQuestionnaireQuery.WriteAsync(changes, cancellationToken);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception e)
             {
@@ -480,28 +508,16 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         public static async Task<List<KeyValuePair<string, List<QuestionTopFive>>>> QueryQuestionnairesAsync()
         {
-            // test
-            //using (StreamReader r = new StreamReader(@"C:\SourceTree Repos\ActivityCoachingBot\test.json"))
-            //{
-            //    string json = r.ReadToEnd();
-            //    //var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
-            //    var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
-            //}
-            //
-
             var sqlQueryText = "SELECT c.document.Key, c.document[\"Value\"] FROM c";
-
-            //Console.WriteLine("Running query: {0}\n", sqlQueryText);
 
             QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
 
             CosmosClient cosmosClient = new CosmosClient(cosmosServiceEndpoint, cosmosDBKey);
             Azure.Cosmos.Database database;
             database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
-            //Console.WriteLine("Created Database: {0}\n", this.database.Id);
+
             Container container;
             container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerIdQuestionnaires, "/id");
-            //Console.WriteLine("Created Container: {0}\n", this.container.Id);
 
             FeedIterator<KeyValuePair<string, List<QuestionTopFive>>> queryResultSetIterator = container.GetItemQueryIterator<KeyValuePair<string, List<QuestionTopFive>>>(queryDefinition);
 
@@ -511,18 +527,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 Azure.Cosmos.FeedResponse<KeyValuePair<string, List<QuestionTopFive>>> currentResultSet = await queryResultSetIterator.ReadNextAsync();
 
-                // Test
-                //using (StreamReader r = new StreamReader(@"C:\SourceTree Repos\ActivityCoachingBot\test2.json"))
-                //{
-                //    string json = r.ReadToEnd();
-                //    //var items = JsonConvert.DeserializeObject<KeyValuePair<string, List<QuestionTopFive>>>(json);
-                //    var items = JsonConvert.DeserializeObject<List<string>>(json);
-                //}
-
                 foreach (KeyValuePair<string, List<QuestionTopFive>> questionnaire in currentResultSet)
                 {
                     questionnaireList.Add(questionnaire);
-                    //Console.WriteLine("\tRead {0}\n", family);
                 }
             }
 

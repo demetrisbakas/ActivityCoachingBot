@@ -66,6 +66,9 @@ namespace Microsoft.BotBuilderSamples
             // Register the NameOfQuestionnaireDialog.
             services.AddSingleton<NameOfQuestionnaireDialog>();
 
+            // Register the UploadQuestionnairesDialog.
+            services.AddSingleton<UploadQuestionnairesDialog>();
+
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
 

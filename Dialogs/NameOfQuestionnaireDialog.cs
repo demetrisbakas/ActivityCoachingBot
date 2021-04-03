@@ -15,8 +15,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
     {
         public static string NameOfQuestionnaire { get; set; }
         public static int NumberOfQuestionsInQuestionnaire { get; set; }
+        public static List<QuestionTopFive> QuestionnaireToUpload { get; set; } = new List<QuestionTopFive>();
+    //public static KeyValuePair<string, List<QuestionTopFive>> QuestionnaireToUpload { get; set; } = new KeyValuePair<string, List<QuestionTopFive>>();
 
-        public NameOfQuestionnaireDialog()
+    public NameOfQuestionnaireDialog()
            : base(nameof(NameOfQuestionnaireDialog))
         {
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), PositiveNumberValidatorAsync));
@@ -33,7 +35,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> AskNameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var messageText = "What is the title of your questionnaire?";
+            var messageText = MainDialog.Response.EnterNameOfQuestionnaire();
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
@@ -42,9 +44,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             NameOfQuestionnaire = stepContext.Result.ToString();
 
-            var messageText = "How many questions does your questionnaire contain?";
+            var messageText = MainDialog.Response.EnterNumberOfQuestions();
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-            var retryMessageText = "Can you repeat the number of questions please?";
+            var retryMessageText = MainDialog.Response.ReenterNumberOfQuestions();
             var retryPromptMessage = MessageFactory.Text(retryMessageText, retryMessageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(NumberPrompt<int>), new PromptOptions { Prompt = promptMessage, RetryPrompt = retryPromptMessage }, cancellationToken);
         }
@@ -53,7 +55,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             NumberOfQuestionsInQuestionnaire = (int)stepContext.Result;
 
-            return await stepContext.BeginDialogAsync(nameof(UploadTipsDialog), NumberOfQuestionsInQuestionnaire, cancellationToken);
+            return await stepContext.BeginDialogAsync(nameof(UploadQuestionnairesDialog), NumberOfQuestionsInQuestionnaire, cancellationToken);
         }
 
         private async Task<bool> PositiveNumberValidatorAsync(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)

@@ -1,0 +1,89 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Please enter the question:"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Question",
+      "placeholder": "Question"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Personality Trait:"
+    },
+    {
+      "type": "Input.ChoiceSet",
+      "placeholder": "Personality Trait",
+      "choices": [
+        {
+          "title": "Extraversion",
+          "value": "Extraversion"
+        },
+        {
+          "title": "Agreeableness",
+          "value": "Agreeableness"
+        },
+        {
+          "title": "Conscientiousness",
+          "value": "Conscientiousness"
+        },
+        {
+          "title": "Neuroticism",
+          "value": "Neuroticism"
+        },
+        {
+          "title": "Openness",
+          "value": "Openness"
+        }
+      ],
+      "id": "PersonalityTrait",
+      "style": "expanded"
+    },
+    {
+      "type": "Input.Toggle",
+      "id": "ReverseLogic",
+      "title": "Reverse Logic",
+      "value": "false"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Answers (Answers are optional):"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Answer1",
+      "placeholder": "Answer 1"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Answer2",
+      "placeholder": "Answer 2"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Answer3",
+      "placeholder": "Answer 3"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Answer4",
+      "placeholder": "Answer 4"
+    },
+    {
+      "type": "Input.Text",
+      "id": "Answer5",
+      "placeholder": "Answer 5"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit"
+    }
+  ]
+}
