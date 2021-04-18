@@ -36,6 +36,19 @@ namespace CoreBot
                     .Collect()
                     .Where(c => c.Any()));
 
+            //When()
+            //    .Match<PersonalDetails>(() => personalDetails)
+            //    // Cluster rule
+            //    .Query(() => tips, x => x.Match<Tip>(o => o.Cluster == personalDetails.Cluster || o.Cluster == null,
+            //        // Smoker rule
+            //        o => o.Smoker == personalDetails.Smoker && personalDetails.Smoker == true,
+            //        // Low sleep rule
+            //        o => o.LowSleep == true && personalDetails.Sleep <= lowSleepThreshold)
+            //        .Collect()
+            //        .Where(c => c.Any()));
+
+
+
             Then()
                 .Do(ctx => AddTips(tips));
         } 

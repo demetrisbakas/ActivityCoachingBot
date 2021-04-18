@@ -60,7 +60,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var result = JsonConvert.DeserializeObject<Tip>(stepContext.Result.ToString());
-            NumberOfTipsDialog.TipsUploadList.Add(result);
+            NumberOfTipsDialog.TipsUploadList.Add(NullifyFalseValues(result));
 
             if (--NumberOfTipsDialog.NumberOfTips == 0)
             {
@@ -76,6 +76,20 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
             else
                 return await stepContext.BeginDialogAsync(nameof(UploadTipsDialog), NumberOfTipsDialog.NumberOfTips, cancellationToken);
+        }
+
+        private Tip NullifyFalseValues(Tip input)
+        {
+            if (input.Smoker == false)
+                input.Smoker = null;
+            if (input.LowWaterConsumption == false)
+                input.LowWaterConsumption = null;
+            if (input.LowSleep == false)
+                input.LowSleep = null;
+            if (input.LowPhysicalActivity == false)
+                input.LowPhysicalActivity = null;
+
+            return input;
         }
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreBot;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Documents;
@@ -475,9 +477,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         public static async Task<List<Tip>> QueryTipsAsync()
         {
-            var sqlQueryText = "SELECT * FROM c";
-
-                //Console.WriteLine("Running query: {0}\n", sqlQueryText);
+            var sqlQueryText = "SELECT c.document.TipMessage, c.document.Cluster, c.document.Smoker, c.document.LowWaterConsumption, c.document.LowSleep, c.document.LowPhysicalActivity FROM c";
 
             QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
 
@@ -490,18 +490,30 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             //Console.WriteLine("Created Container: {0}\n", this.container.Id);
 
             FeedIterator<Tip> queryResultSetIterator = container.GetItemQueryIterator<Tip>(queryDefinition);
+            //FeedIterator<Dictionary<string, object>> queryResultSetIterator = container.GetItemQueryIterator<Dictionary<string, object>>(queryDefinition);
 
             List<Tip> tipList = new List<Tip>();
 
             while (queryResultSetIterator.HasMoreResults)
             {
-                Azure.Cosmos.FeedResponse<Tip> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                var currentResultSet = await queryResultSetIterator.ReadNextAsync();
                 foreach (Tip details in currentResultSet)
                 {
                     tipList.Add(details);
                     //Console.WriteLine("\tRead {0}\n", family);
                 }
             }
+
+
+            //while (queryResultSetIterator.HasMoreResults)
+            //{
+            //    Azure.Cosmos.FeedResponse<Tip> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+            //    foreach (Tip details in currentResultSet)
+            //    {
+            //        tipList.Add(details);
+            //        //Console.WriteLine("\tRead {0}\n", family);
+            //    }
+            //}
 
             return tipList;
         }
@@ -584,77 +596,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 return false;
         }
 
-
-        //
-        //public static void TestSQL()
-        //{
-        //    var querySpec = new SqlQuerySpec
-        //    {
-        //        QueryText = "select * from c",
-        //        Parameters = new SqlParameterCollection
-        //        {
-        //            new SqlParameter
-        //            {
-        //                Name = "@id",
-        //                //Value = userId
-        //            }
-        //        }
-        //    };
-
-        //    var documentClient = new DocumentClient(new Uri(cosmosServiceEndpoint), cosmosDBKey);
-        //    var database = documentClient.CreateDatabaseQuery().FirstOrDefault(d => d.Id == cosmosDBDatabaseName);
-        //    var collection = documentClient.CreateDocumentCollectionQuery(new Uri(cosmosServiceEndpoint), "select * from c").FirstOrDefault();
-        //    var queryResult = documentClient.CreateDatabaseQuery(collection.DocumentsLink);
-
-
-
-
-
-
-
-
-
-
-
-
-        //    FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
-
-        //    IQueryable<dynamic> familyQueryInSql = client.CreateDocumentQuery<dynamic>(UriFactory.CreateDocumentCollectionUri(cosmosDBDatabaseName, cosmosDBConteinerId), "SELECT * FROM c", queryOptions);
-        //}
-        //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public static void AddConversationReference(Activity activity)
         {
             var conversationReference = activity.GetConversationReference();
             _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
         }
-
-        //protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
-        //{
-        //    AddConversationReference(turnContext.Activity as Activity);
-
-        //    // Echo back what the user said
-        //    await turnContext.SendActivityAsync(MessageFactory.Text($"You sent '{turnContext.Activity.Text}'"), cancellationToken);
-        //}
     }
 }

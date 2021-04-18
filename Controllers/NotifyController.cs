@@ -60,7 +60,10 @@ namespace CoreBot.Controllers
             // http://localhost:3978/api/notify
             //await turnContext.SendActivityAsync("proactive hello");
             if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
-                await turnContext.SendActivityAsync(await MainDialog.Response.TipMessageAsync());
+            {
+                var temp = await MainDialog.Response.TipMessageAsync();
+                await turnContext.SendActivityAsync(temp);
+            }
         }
     }
 }
