@@ -39,10 +39,12 @@ namespace CoreBot.Controllers
 
         public async Task<IActionResult> Get()
         {
-            foreach (var conversationReference in _conversationReferences.Values)
-            {
-                await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, conversationReference, BotCallback, default);
-            }
+            //foreach (var conversationReference in _conversationReferences.Values)
+            //{
+            //    await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, conversationReference, BotCallback, default);
+            //}
+
+            await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, _conversationReferences.Values.FirstOrDefault(), BotCallback, default);
 
             // Let the caller know proactive messages have been sent
             return new ContentResult()
