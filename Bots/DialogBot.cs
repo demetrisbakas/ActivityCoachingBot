@@ -64,11 +64,6 @@ namespace Microsoft.BotBuilderSamples.Bots
             await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
         }
 
-
-
-
-
-
         protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             MainDialog.AddConversationReference(turnContext.Activity as Activity);

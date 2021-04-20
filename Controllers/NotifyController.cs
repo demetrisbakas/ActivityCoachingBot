@@ -44,7 +44,14 @@ namespace CoreBot.Controllers
             //    await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, conversationReference, BotCallback, default);
             //}
 
-            await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, _conversationReferences.Values.FirstOrDefault(), BotCallback, default);
+            try
+            {
+                await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, _conversationReferences.Values.FirstOrDefault(), BotCallback, default);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             // Let the caller know proactive messages have been sent
             return new ContentResult()
