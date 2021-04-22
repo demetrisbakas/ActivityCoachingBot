@@ -70,8 +70,8 @@ namespace CoreBot.Controllers
             //await turnContext.SendActivityAsync("proactive hello");
             if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
             {
-                var temp = await MainDialog.Response.TipMessageAsync();
-                await turnContext.SendActivityAsync(temp);
+                var tipMessage = await MainDialog.Response.TipMessageAsync();
+                await turnContext.SendActivityAsync(tipMessage);
             }
         }
     }
