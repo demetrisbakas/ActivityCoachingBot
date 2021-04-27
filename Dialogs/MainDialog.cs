@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreBot;
@@ -127,28 +128,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var luisResult = await _luisRecognizer.RecognizeAsync<LuisModel>(stepContext.Context, cancellationToken);
             switch (luisResult.TopIntent().intent)
             {
-                //case FlightBooking.Intent.BookFlight:
-                //    await ShowWarningForUnsupportedCities(stepContext.Context, luisResult, cancellationToken);
-
-                //    // Initialize BookingDetails with any entities we may have found in the response.
-                //    var bookingDetails = new BookingDetails()
-                //    {
-                //        // Get destination and origin from the composite entities arrays.
-                //        Destination = luisResult.ToEntities.Airport,
-                //        Origin = luisResult.FromEntities.Airport,
-                //        TravelDate = luisResult.TravelDate,
-                //    };
-
-                //    // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                //    return await stepContext.BeginDialogAsync(nameof(BookingDialog), bookingDetails, cancellationToken);
-
-                //case FlightBooking.Intent.GetWeather:
-                //    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-                //    var getWeatherMessageText = "TODO: get weather flow here";
-                //    var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
-                //    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
-                //    break;
-
                 case LuisModel.Intent.AddQuestionnairesOrTips:
                     return await stepContext.BeginDialogAsync(nameof(AuthenticationDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 
@@ -156,15 +135,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
 
                 case LuisModel.Intent.Greet:
-                    // Deatails of the user
-                    // IMPORTANT Wipes the data of the user
-                    //PersonalDetailsDialog.PersonalDetails = new PersonalDetails()
-                    //{
-                    //    // Get name and age from the composite entities arrays.
-                    //    Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null,
-                    //    Age = (int?)luisResult.Entities.age?[0].Number,
-                    //};
-
                     if (PersonalDetailsDialog.PersonalDetails.Name == null)
                         PersonalDetailsDialog.PersonalDetails.Name = luisResult.Entities.personName != null ? char.ToUpper(luisResult.Entities.personName[0][0]) + luisResult.Entities.personName[0].Substring(1) : null;
                     if (PersonalDetailsDialog.PersonalDetails.Age == null)
@@ -175,27 +145,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     var greetTextMessage = MessageFactory.Text(greetText, greetText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(greetTextMessage, cancellationToken);
 
-
-
-
-
-
-
-                    //await ShowWarningForUnsupportedCities(stepContext.Context, luisResult, cancellationToken);
-
-                    // Initialize BookingDetails with any entities we may have found in the response.
-                    //var personalDetails = new PersonalDetails()
-                    //{
-                    //    // Get destination and origin from the composite entities arrays.
-                    //    //Name = luisResult.Entities.datetime.ToString(),
-                    //    Name = luisResult.ToEntities.Airport,
-                    //    Age = luisResult.FromEntities.Airport,
-                    //    Sex = luisResult.TravelDate,
-                    //};
-
                     // Run the PersonalDetailsDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                     return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
-                //return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers, cancellationToken);
 
                 case LuisModel.Intent.EnterPersonalDetails:
                     if (CheckDetails())
@@ -208,7 +159,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     // Try to find an answer on the knowledge base
                     var knowledgeBaseResult = await _luisRecognizer.SampleQnA.GetAnswersAsync(stepContext.Context);
 
-                    if (knowledgeBaseResult?.FirstOrDefault() != null)
+                    if (Regex.IsMatch(stepContext.Context.Activity.Text, "help", RegexOptions.IgnoreCase))
+                    {
+                        // If intent is help, return help message
+                        var helpMessageText = Response.HelpMessage();
+                        return await stepContext.ReplaceDialogAsync(InitialDialogId, helpMessageText, cancellationToken);
+                    }
+                    else if (knowledgeBaseResult?.FirstOrDefault() != null)
                         return await stepContext.ReplaceDialogAsync(InitialDialogId, knowledgeBaseResult[0].Answer, cancellationToken);
                     else
                     {
@@ -223,50 +180,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return await stepContext.NextAsync(null, cancellationToken);
         }
 
-        // Shows a warning if the requested From or To cities are recognized as entities but they are not in the Airport entity list.
-        // In some cases LUIS will recognize the From and To composite entities as a valid cities but the From and To Airport values
-        // will be empty if those entity values can't be mapped to a canonical item in the Airport.
-        //private static async Task ShowWarningForUnsupportedCities(ITurnContext context, FlightBooking luisResult, CancellationToken cancellationToken)
-        //{
-        //    var unsupportedCities = new List<string>();
-
-        //    var fromEntities = luisResult.FromEntities;
-        //    if (!string.IsNullOrEmpty(fromEntities.From) && string.IsNullOrEmpty(fromEntities.Airport))
-        //    {
-        //        unsupportedCities.Add(fromEntities.From);
-        //    }
-
-        //    var toEntities = luisResult.ToEntities;
-        //    if (!string.IsNullOrEmpty(toEntities.To) && string.IsNullOrEmpty(toEntities.Airport))
-        //    {
-        //        unsupportedCities.Add(toEntities.To);
-        //    }
-
-        //    if (unsupportedCities.Any())
-        //    {
-        //        var messageText = $"Sorry but the following airports are not supported: {string.Join(',', unsupportedCities)}";
-        //        var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
-        //        await context.SendActivityAsync(message, cancellationToken);
-        //    }
-        //}
-
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // If the child dialog ("BookingDialog") was cancelled, the user failed to confirm or if the intent wasn't BookFlight
-            // the Result here will be null.
-            //if (stepContext.Result is BookingDetails result)
-            //{
-            //    // Now we have all the booking details call the booking service.
-
-            //    // If the call to the booking service was successful tell the user.
-
-            //    var timeProperty = new TimexProperty(result.TravelDate);
-            //    var travelDateMsg = timeProperty.ToNaturalLanguage(DateTime.Now);
-            //    var messageText = $"I have you booked to {result.Destination} from {result.Origin} on {travelDateMsg}";
-            //    var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
-            //    await stepContext.Context.SendActivityAsync(message, cancellationToken);
-            //}
-
             // Restart the main dialog with a different message the second time around
             var promptMessage = "What else can I do for you?";
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);

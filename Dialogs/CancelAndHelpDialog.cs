@@ -13,7 +13,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class CancelAndHelpDialog : ComponentDialog
     {
-        private const string HelpMsgText = "Show help here";
         private const string CancelMsgText = "Cancelling...";
 
         public CancelAndHelpDialog(string id)
@@ -36,30 +35,39 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             if (innerDc.Context.Activity.Type == ActivityTypes.Message && innerDc.Context.Activity.Text != null)
             {
-                    var text = innerDc.Context.Activity.Text.ToLowerInvariant();
+                var text = innerDc.Context.Activity.Text.ToLowerInvariant();
 
-                    switch (text)
-                    {
-                        case "help":
-                        case "?":
-                            var helpMessage = MessageFactory.Text(HelpMsgText, HelpMsgText, InputHints.ExpectingInput);
-                            await innerDc.Context.SendActivityAsync(helpMessage, cancellationToken);
-                            return new DialogTurnResult(DialogTurnStatus.Waiting);
+                switch (text)
+                {
+                    case "help":
+                    case "?":
+                        var helpMessageText = MainDialog.Response.HelpMessage();
+                        var helpMessage = MessageFactory.Text(helpMessageText, helpMessageText, InputHints.ExpectingInput);
+                        await innerDc.Context.SendActivityAsync(helpMessage, cancellationToken);
+                        return new DialogTurnResult(DialogTurnStatus.Waiting);
 
-                        case "exit":
-                        case "cancel":
-                        case "quit":
-                            var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
-                            await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
-                            return await innerDc.CancelAllDialogsAsync(cancellationToken);
-                    }
-
-                    if (Regex.IsMatch(text, "exit", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "cancel", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "quit", RegexOptions.IgnoreCase))
-                    {
+                    case "exit":
+                    case "cancel":
+                    case "quit":
                         var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
                         await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
                         return await innerDc.CancelAllDialogsAsync(cancellationToken);
-                    }
+                }
+
+                if (Regex.IsMatch(text, "exit", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "cancel", RegexOptions.IgnoreCase) || Regex.IsMatch(text, "quit", RegexOptions.IgnoreCase))
+                {
+                    var cancelMessage = MessageFactory.Text(CancelMsgText, CancelMsgText, InputHints.IgnoringInput);
+                    await innerDc.Context.SendActivityAsync(cancelMessage, cancellationToken);
+                    return await innerDc.CancelAllDialogsAsync(cancellationToken);
+                }
+
+                if (Regex.IsMatch(text, "help", RegexOptions.IgnoreCase))
+                {
+                    var helpMessageText = MainDialog.Response.HelpMessage();
+                    var helpMessage = MessageFactory.Text(helpMessageText, helpMessageText, InputHints.ExpectingInput);
+                    await innerDc.Context.SendActivityAsync(helpMessage, cancellationToken);
+                    return new DialogTurnResult(DialogTurnStatus.Waiting);
+                }
             }
 
             return null;

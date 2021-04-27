@@ -24,7 +24,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> sexQuestionList = new List<string>() { "What is your sex?", "Are you a male or a female?" };
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
-        private readonly List<string> welcomeMessageList = new List<string>() { "Hey I'm a bot, what can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like." };
+        private readonly List<string> welcomeMessageList = new List<string>() { "Hey I'm a bot, what can I help you with today?\n\nGreet me to enter the personal details dialog, or ask whatever you like.\n\nIf you need any help, ask away!" };
         private readonly List<string> smokerMessageList = new List<string>() { "Are you a smoker?" };
         private readonly List<string> waterConsumptionMessageList = new List<string>() { "How many cups of water do you drink every day?" };
         private readonly List<string> waterConsumptionRetryList = new List<string>() { "Can you repeat the number of cups please?" };
@@ -42,6 +42,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> enterNameOfQuestionnaireList = new List<string>() { "What is the title of your questionnaire?" };
         private readonly List<string> enterNumberOfQuestionsList = new List<string>() { "How many questions does your questionnaire contain?" };
         private readonly List<string> reenterNumberOfQuestionsList = new List<string>() { "Can you repeat the number of questions please?" };
+        private readonly List<string> helpMessageList = new List<string>() { "This is the help message.\n\nBy greeting me you will enter the regular flow of the dialog.\n\nOther functionality includes:\n\nAsking to change your personal details\n\nAsking to answer a questionnaire\n\nAsking to upload data like tips and questionnaires, provided you have the credentials\n\nYou can tell me to exit or quit each dialog at any time" };
 
         public List<Tip> TipList { get; set; } = new List<Tip>();
 
@@ -198,6 +199,11 @@ namespace Microsoft.BotBuilderSamples
         public string ReenterNumberOfQuestions()
         {
             return RandomiseList(reenterNumberOfQuestionsList);
+        }
+
+        public string HelpMessage()
+        {
+            return RandomiseList(helpMessageList);
         }
 
         public async Task<string> TipMessageAsync()
