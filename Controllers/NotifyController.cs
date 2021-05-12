@@ -39,11 +39,6 @@ namespace CoreBot.Controllers
 
         public async Task<IActionResult> Get()
         {
-            //foreach (var conversationReference in _conversationReferences.Values)
-            //{
-            //    await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, conversationReference, BotCallback, default);
-            //}
-
             try
             {
                 await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, _conversationReferences.Values.FirstOrDefault(), BotCallback, default);

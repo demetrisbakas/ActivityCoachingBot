@@ -214,6 +214,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             DatabaseId = cosmosDBDatabaseName,
         });
 
+        // Sends Personal Data to database
         public static async void WriteToDB(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Send to DB
@@ -230,6 +231,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
+        // Sends Tips to database
         public static async void SendTipsToDB(List<Tip> input, WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Send to DB
@@ -252,6 +254,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
+        // Sends questionnaires to database
         public static async void SendQuestionnairesToDB(string name, List<QuestionTopFive> questions, WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Send to DB
@@ -270,74 +273,20 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
         }
 
-        //public static async void WriteQuestionnairesTempAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        //{
-        //    CosmosDbPartitionedStorage CosmosDBQueryQuestionnaires = new CosmosDbPartitionedStorage(new CosmosDbPartitionedStorageOptions
-        //    {
-        //        AuthKey = cosmosDBKey,
-        //        ContainerId = "test",
-        //        CosmosDbEndpoint = cosmosServiceEndpoint,
-        //        DatabaseId = cosmosDBDatabaseName,
-        //    });
-
-        //    // Sand to DB
-        //    var changes = new Dictionary<string, object>() { { Response.Questionnaires.FirstOrDefault().Key, Response.Questionnaires.FirstOrDefault() } };
-        //    try
-        //    {
-        //        await CosmosDBQueryQuestionnaires.WriteAsync(changes, cancellationToken);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        await stepContext.Context.SendActivityAsync($"Error while connecting to database.\n\n{e}");
-        //    }
-        //}
-
+        // Clusters all the users based on their personality traits
         public static async Task<uint> ClusteringAsync()
         {
-            //var dataLocation = "./Seed_Data.csv";
-
-
-            //IQueryable<PersonalDetails> linqQuery = table.CreateQuery<PersonalDetails>()
-            //.Select(x => new PersonalDetails());
-
-
             var dataList = await ClusteringData;
-
-
 
             var context = new MLContext();
 
-            //var textLoader = context.Data.CreateTextLoader(new[]
-            //{
-            //    new TextLoader.Column("Extraversion", DataKind.Single, 0),
-            //    new TextLoader.Column("Agreeableness", DataKind.Single, 1),
-            //    new TextLoader.Column("Conscientiousness", DataKind.Single, 2),
-            //    new TextLoader.Column("Neuroticism", DataKind.Single, 3),
-            //    new TextLoader.Column("Openness", DataKind.Single, 4),
-            //},
-            //hasHeader: true,
-            //separatorChar: ',');
-
             IDataView data = context.Data.LoadFromEnumerable(dataList);
-
-
-            //IDataView data = textLoader.Load(dataLocation);
 
             var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2);
 
             var pipeline = context.Transforms.Concatenate("Features", "Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness").Append(context.Clustering.Trainers.KMeans(featureColumnName: "Features", numberOfClusters: 5));
 
-            //var preview = trainTestData.TrainSet.Preview();
-
             var model = pipeline.Fit(trainTestData.TrainSet);
-
-            //var predictions = model.Transform(trainTestData.TestSet);
-
-            //var metrics = context.Clustering.Evaluate(predictions, scoreColumnName: "Score", featureColumnName: "Features");
-
-            //Console.WriteLine($"Average minimum score: {metrics.AverageDistance}");
-
-            //var predictionFunc = model.CreatePredictionEngine<PersonalDetails, SeedPrediction>(context);
 
             var predictionFunc = context.Model.CreatePredictionEngine<ClusterPersonalDetailsWithoutNull, SeedPrediction>(model);
 
@@ -350,28 +299,21 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 Openness = PersonalDetailsDialog.PersonalDetails.Openness != null ? (float)PersonalDetailsDialog.PersonalDetails.Openness : 0
             });
 
-            //Console.WriteLine($"Prediction - {prediction.SelectedClusterId}");
-            //Console.ReadLine();
-
             return prediction.SelectedClusterId;
         }
 
-
+        // Requests clustering data from the database
         public static async Task<List<ClusterPersonalDetailsWithoutNull>> QueryClusterDetailsAsync()
         {
             var sqlQueryText = "SELECT c.document.Extraversion, c.document.Agreeableness, c.document.Conscientiousness, c.document.Neuroticism, c.document.Openness FROM c";
-
-            //Console.WriteLine("Running query: {0}\n", sqlQueryText);
 
             QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
 
             CosmosClient cosmosClient = new CosmosClient(cosmosServiceEndpoint, cosmosDBKey);
             Azure.Cosmos.Database database;
             database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
-            //Console.WriteLine("Created Database: {0}\n", this.database.Id);
             Container container;
             container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerId, "/id");
-            //Console.WriteLine("Created Container: {0}\n", this.container.Id);
 
             FeedIterator<ClusterPersonalDetails> queryResultSetIterator = container.GetItemQueryIterator<ClusterPersonalDetails>(queryDefinition);
 
@@ -383,13 +325,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 foreach (ClusterPersonalDetails details in currentResultSet)
                 {
                     detailsList.Add(details);
-                    //Console.WriteLine("\tRead {0}\n", family);
                 }
             }
 
             return RemoveNullValues(detailsList);
         }
 
+        // Gets all the tips from the database
         public static async Task<List<Tip>> QueryTipsAsync()
         {
             var sqlQueryText = "SELECT c.document.TipMessage, c.document.Cluster, c.document.Smoker, c.document.LowWaterConsumption, c.document.LowSleep, c.document.LowPhysicalActivity FROM c";
@@ -399,13 +341,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             CosmosClient cosmosClient = new CosmosClient(cosmosServiceEndpoint, cosmosDBKey);
             Azure.Cosmos.Database database;
             database = await cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDBDatabaseName);
-            //Console.WriteLine("Created Database: {0}\n", this.database.Id);
             Container container;
             container = await database.CreateContainerIfNotExistsAsync(cosmosDBConteinerIdTips, "/id");
-            //Console.WriteLine("Created Container: {0}\n", this.container.Id);
 
             FeedIterator<Tip> queryResultSetIterator = container.GetItemQueryIterator<Tip>(queryDefinition);
-            //FeedIterator<Dictionary<string, object>> queryResultSetIterator = container.GetItemQueryIterator<Dictionary<string, object>>(queryDefinition);
 
             List<Tip> tipList = new List<Tip>();
 
@@ -415,24 +354,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 foreach (Tip details in currentResultSet)
                 {
                     tipList.Add(details);
-                    //Console.WriteLine("\tRead {0}\n", family);
                 }
             }
-
-
-            //while (queryResultSetIterator.HasMoreResults)
-            //{
-            //    Azure.Cosmos.FeedResponse<Tip> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-            //    foreach (Tip details in currentResultSet)
-            //    {
-            //        tipList.Add(details);
-            //        //Console.WriteLine("\tRead {0}\n", family);
-            //    }
-            //}
 
             return tipList;
         }
 
+        // Gets alla the questionnaires from the database
         public static async Task<List<KeyValuePair<string, List<QuestionTopFive>>>> QueryQuestionnairesAsync()
         {
             var sqlQueryText = "SELECT c.document.Key, c.document[\"Value\"] FROM c";
@@ -463,7 +391,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return ReplaceMissingQuestionValues(questionnaireList);
         }
 
-
+        // Removes the null values from the clustering dataset
         private static List<ClusterPersonalDetailsWithoutNull> RemoveNullValues(List<ClusterPersonalDetails> detailsList)
         {
             var outputList = new List<ClusterPersonalDetailsWithoutNull>();
@@ -487,7 +415,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return outputList;
         }
 
-
+        // Puts the default answers if a question does not have any answers
         private static List<KeyValuePair<string, List<QuestionTopFive>>> ReplaceMissingQuestionValues(List<KeyValuePair<string, List<QuestionTopFive>>> questionnaireList)
         {
             foreach(var questionnaire in questionnaireList)
