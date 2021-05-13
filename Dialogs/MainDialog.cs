@@ -42,7 +42,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static Task<IDictionary<string, object>> ReadFromDb;
         public static Task<List<ClusterPersonalDetailsWithoutNull>> ClusteringData;
         public static Task<List<KeyValuePair<string, List<QuestionTopFive>>>> Questionnaires;
-        private static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
+        //private static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
 
         // Implemented a getter, so no other class can change the value of the recognizer exept this constructor
         public static ConnectionRecognizer Get_luisRecognizer()
