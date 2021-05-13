@@ -55,12 +55,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, UploadQuestionnairesDialog uploadQuestionnairesDialog, ILogger<MainDialog> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, UploadQuestionnairesDialog uploadQuestionnairesDialog, ILogger<MainDialog> logger/*, ConcurrentDictionary<string, ConversationReference> conversationReferences*/)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
             Logger = logger;
-            _conversationReferences = conversationReferences;
+            //_conversationReferences = conversationReferences;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(personalDetailsDialog);
@@ -439,10 +439,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 return false;
         }
 
-        public static void AddConversationReference(Activity activity)
-        {
-            var conversationReference = activity.GetConversationReference();
-            _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
-        }
+        //public static void AddConversationReference(Activity activity)
+        //{
+        //    var conversationReference = activity.GetConversationReference();
+        //    _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
+        //}
     }
 }
