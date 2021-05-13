@@ -9,6 +9,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.BotBuilderSamples.Dialogs;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Microsoft.BotBuilderSamples.Bots
 {
@@ -25,12 +26,16 @@ namespace Microsoft.BotBuilderSamples.Bots
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
 
-        public DialogBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
+        private static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
+
+        public DialogBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
         {
             ConversationState = conversationState;
             UserState = userState;
             Dialog = dialog;
             Logger = logger;
+
+            _conversationReferences = conversationReferences;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
@@ -66,9 +71,15 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            MainDialog.AddConversationReference(turnContext.Activity as Activity);
+            AddConversationReference(turnContext.Activity as Activity);
 
             return base.OnConversationUpdateActivityAsync(turnContext, cancellationToken);
+        }
+
+        protected static void AddConversationReference(Activity activity)
+        {
+            var conversationReference = activity.GetConversationReference();
+            _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
         }
     }
 }
