@@ -127,12 +127,12 @@ namespace ProactiveBot.Controllers
 
         private async Task BotCallback(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            //await turnContext.SendActivityAsync("proactive hello");
-            if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
-            {
-                var tipMessage = await MainDialog.Response.TipMessageAsync();
-                await turnContext.SendActivityAsync(tipMessage);
-            }
+            await turnContext.SendActivityAsync("proactive hello");
+            //if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
+            //{
+            //    var tipMessage = await MainDialog.Response.TipMessageAsync();
+            //    await turnContext.SendActivityAsync(tipMessage);
+            //}
         }
     }
 }
