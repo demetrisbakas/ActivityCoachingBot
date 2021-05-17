@@ -84,6 +84,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
+using Microsoft.BotBuilderSamples.Dialogs;
 using Microsoft.Extensions.Configuration;
 
 namespace ProactiveBot.Controllers
@@ -126,7 +127,12 @@ namespace ProactiveBot.Controllers
 
         private async Task BotCallback(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync("proactive hello");
+            //await turnContext.SendActivityAsync("proactive hello");
+            if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
+            {
+                var tipMessage = await MainDialog.Response.TipMessageAsync();
+                await turnContext.SendActivityAsync(tipMessage);
+            }
         }
     }
 }
