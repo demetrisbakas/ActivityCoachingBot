@@ -39,22 +39,22 @@ namespace Microsoft.BotBuilderSamples.Bots
         }
 
         // Load attachment from embedded resource.
-        private Attachment CreateAdaptiveCardAttachment()
-        {
-            var cardResourcePath = "CoreBot.Cards.welcomeCard.json";
+        //private Attachment CreateAdaptiveCardAttachment()
+        //{
+        //    var cardResourcePath = "CoreBot.Cards.welcomeCard.json";
 
-            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    var adaptiveCard = reader.ReadToEnd();
-                    return new Attachment()
-                    {
-                        ContentType = "application/vnd.microsoft.card.adaptive",
-                        Content = JsonConvert.DeserializeObject(adaptiveCard),
-                    };
-                }
-            }
-        }
+        //    using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
+        //    {
+        //        using (var reader = new StreamReader(stream))
+        //        {
+        //            var adaptiveCard = reader.ReadToEnd();
+        //            return new Attachment()
+        //            {
+        //                ContentType = "application/vnd.microsoft.card.adaptive",
+        //                Content = JsonConvert.DeserializeObject(adaptiveCard),
+        //            };
+        //        }
+        //    }
+        //}
     }
 }

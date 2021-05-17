@@ -26,7 +26,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
 
-        private static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
+        protected static ConcurrentDictionary<string, ConversationReference> _conversationReferences;
 
         public DialogBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, ConcurrentDictionary<string, ConversationReference> conversationReferences)
         {
