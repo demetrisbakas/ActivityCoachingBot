@@ -65,12 +65,12 @@ namespace CoreBot.Controllers
             // If you encounter permission-related errors when sending this message, see
             // https://aka.ms/BotTrustServiceUrl
             // http://localhost:3978/api/notify
-            await turnContext.SendActivityAsync("proactive hello");
-            //if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
-            //{
-            //    var tipMessage = await MainDialog.Response.TipMessageAsync();
-            //    await turnContext.SendActivityAsync(tipMessage);
-            //}
+            //await turnContext.SendActivityAsync("proactive hello");
+            if (PersonalDetailsDialog.PersonalDetails.Cluster != null)
+            {
+                var tipMessage = await MainDialog.Response.TipMessageAsync();
+                await turnContext.SendActivityAsync(tipMessage);
+            }
         }
     }
 }
