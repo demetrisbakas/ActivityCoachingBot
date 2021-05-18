@@ -41,7 +41,10 @@ namespace CoreBot.Controllers
         {
             try
             {
-                await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, _conversationReferences.Values.FirstOrDefault(), BotCallback, default);
+                foreach (var conversationReference in _conversationReferences.Values)
+                {
+                    await ((BotAdapter)_adapter).ContinueConversationAsync(_appId, conversationReference, BotCallback, default);
+                }
             }
             catch (Exception e)
             {
