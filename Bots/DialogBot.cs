@@ -67,14 +67,16 @@ namespace Microsoft.BotBuilderSamples.Bots
 
             // Run the Dialog with the new message Activity.
             await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
-        }
 
-        protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
-        {
             AddConversationReference(turnContext.Activity as Activity);
-
-            return base.OnConversationUpdateActivityAsync(turnContext, cancellationToken);
         }
+
+        //protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
+        //{
+        //    AddConversationReference(turnContext.Activity as Activity);
+
+        //    return base.OnConversationUpdateActivityAsync(turnContext, cancellationToken);
+        //}
 
         protected static void AddConversationReference(Activity activity)
         {
