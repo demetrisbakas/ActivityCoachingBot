@@ -35,6 +35,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> AskNameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            // Empties any previous questions
+            QuestionnaireToUpload = new List<QuestionTopFive>();
+
             var messageText = MainDialog.Response.EnterNameOfQuestionnaire();
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
