@@ -79,9 +79,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 await stepContext.Context.SendActivityAsync(response, cancellationToken);
 
                 // Show results
-                var resultsText = /*$"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}"*/$"CLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
-                var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
-                await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
+                //var resultsText = /*$"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}"*/$"CLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
+                //var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
+                //await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
 
                 // Resseting the flag, in case new user comes
                 finished = false;
@@ -158,16 +158,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (opennessList.Count() > 0)
                 PersonalDetailsDialog.PersonalDetails.Openness = (float)opennessList.Average();
 
-
-
-
-
-
-
-
-
+            // Start the clustering procedure
             PersonalDetailsDialog.PersonalDetails.Cluster = await MainDialog.ClusteringAsync();
-            //await MainDialog.ClusteringAsync();
         }
 
         private Attachment CreateAdaptiveCardAttachment()
