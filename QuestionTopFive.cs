@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.BotBuilderSamples;
+using Microsoft.BotBuilderSamples.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +33,11 @@ namespace CoreBot
             Question = question;
             this.personalityTrait = personalityTrait;
 
-            Answers.Add(new Choice("Not at all"));
-            Answers.Add(new Choice("A little bit"));
-            Answers.Add(new Choice("Neutral"));
-            Answers.Add(new Choice("Much"));
-            Answers.Add(new Choice("Very much"));
+            Answers.Add(new Choice(MainDialog.Response.Answer1()));
+            Answers.Add(new Choice(MainDialog.Response.Answer2()));
+            Answers.Add(new Choice(MainDialog.Response.Answer3()));
+            Answers.Add(new Choice(MainDialog.Response.Answer4()));
+            Answers.Add(new Choice(MainDialog.Response.Answer5()));
         }
 
         public QuestionTopFive(string question, PersonalityTrait personalityTrait, bool reverseLogic)
@@ -45,11 +46,11 @@ namespace CoreBot
             this.personalityTrait = personalityTrait;
             this.reverseLogic = reverseLogic;
 
-            Answers.Add(new Choice("Not at all"));
-            Answers.Add(new Choice("A little bit"));
-            Answers.Add(new Choice("Neutral"));
-            Answers.Add(new Choice("Much"));
-            Answers.Add(new Choice("Very much"));
+            Answers.Add(new Choice(MainDialog.Response.Answer1()));
+            Answers.Add(new Choice(MainDialog.Response.Answer2()));
+            Answers.Add(new Choice(MainDialog.Response.Answer3()));
+            Answers.Add(new Choice(MainDialog.Response.Answer4()));
+            Answers.Add(new Choice(MainDialog.Response.Answer5()));
         }
 
         public QuestionTopFive(string question, PersonalityTrait personalityTrait, string answer1, string answer2, string answer3, string answer4, string answer5)
@@ -81,11 +82,11 @@ namespace CoreBot
         {
             var answerList = new List<Choice>
             {
-                new Choice("Not at all"),
-                new Choice("A little bit"),
-                new Choice("Neutral"),
-                new Choice("Much"),
-                new Choice("Very much")
+                new Choice(MainDialog.Response.Answer1()),
+                new Choice(MainDialog.Response.Answer2()),
+                new Choice(MainDialog.Response.Answer3()),
+                new Choice(MainDialog.Response.Answer4()),
+                new Choice(MainDialog.Response.Answer5())
             };
 
             return answerList;

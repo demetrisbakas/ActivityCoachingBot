@@ -12,7 +12,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class UploadTipsOrQuestionnairesDialog : CancelAndHelpDialog
     {
-        private List<Choice> uploadChoice = new List<Choice>() { new Choice("Tips"), new Choice("Questionnaires") };
+        private List<Choice> uploadChoice = new List<Choice>() { new Choice("Tips"), new Choice("Questionnaire") };
         private string answer;
 
         public UploadTipsOrQuestionnairesDialog()
