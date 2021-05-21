@@ -42,7 +42,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 if (!PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.ContainsKey(obj.Question))
                 {
                     activeQuestion = obj.Question;
-                    var question = $"I see Myself as Someone Who\n\n{activeQuestion}";
+                    var question = $"I see Myself as Someone Who \n\n{activeQuestion}";
                     var promptMessage = MessageFactory.Text(question, question, InputHints.ExpectingInput);
                     var retryText = $"Please choose one option.\n\n{question}";
                     var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
