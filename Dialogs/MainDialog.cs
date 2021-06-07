@@ -55,7 +55,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static ResponseText Response { get; } = new ResponseText();
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, UploadQuestionnairesDialog uploadQuestionnairesDialog, ILogger<MainDialog> logger/*, ConcurrentDictionary<string, ConversationReference> conversationReferences*/)
+        public MainDialog(ConnectionRecognizer luisRecognizer, PersonalDetailsDialog personalDetailsDialog, TopFiveDialog topFiveDialog, QuestionnaireChoiceDialog questionnaireChoiceDialog, ReenterDetailsDialog reenterDetailsDialog, AuthenticationDialog authenticationDialog, UploadTipsOrQuestionnairesDialog uploadTipsOrQuestionnairesDialog, NumberOfTipsDialog numberOfTipsDialog, UploadTipsDialog uploadTipsDialog, NameOfQuestionnaireDialog nameOfQuestionnaireDialog, UploadQuestionnairesDialog uploadQuestionnairesDialog, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -105,13 +105,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Fetch data from DB
             try
             {
-                //var cosmosDbResults = await CosmosDBQuery.ReadAsync(new string[] { PersonalDetailsDialog.PersonalDetails.UserID }, cancellationToken);
                 var cosmosDbResults = await ReadFromDb;
                 if (cosmosDbResults.Values.FirstOrDefault() != null)
                     PersonalDetailsDialog.PersonalDetails = (PersonalDetails)cosmosDbResults.Values.FirstOrDefault();
-                //else
-                //    // Wiping user data since new user is detected
-                //    PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
             }
             catch (Exception e)
             {
@@ -120,11 +116,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             if (!_luisRecognizer.IsConfigured)
             {
-                // LUIS is not configured, we just run the PersonalDetailsDialog path with an empty BookingDetailsInstance.
+                // LUIS is not configured.
                 return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), new BookingDetails(), cancellationToken);
             }
 
-            // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
+            // Call LUIS and prompt the corresponding dialog. Search the knowledge base if intent is not found.
             var luisResult = await _luisRecognizer.RecognizeAsync<LuisModel>(stepContext.Context, cancellationToken);
             switch (luisResult.TopIntent().intent)
             {
@@ -176,7 +172,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     }
                     break;
             }
-
             return await stepContext.NextAsync(null, cancellationToken);
         }
 
@@ -360,7 +355,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return tipList;
         }
 
-        // Gets alla the questionnaires from the database
+        // Gets all the questionnaires from the database
         public static async Task<List<KeyValuePair<string, List<QuestionTopFive>>>> QueryQuestionnairesAsync()
         {
             var sqlQueryText = "SELECT c.document.Key, c.document[\"Value\"] FROM c";
@@ -438,11 +433,5 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             else
                 return false;
         }
-
-        //public static void AddConversationReference(Activity activity)
-        //{
-        //    var conversationReference = activity.GetConversationReference();
-        //    _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
-        //}
     }
 }

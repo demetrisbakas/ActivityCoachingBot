@@ -90,7 +90,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }
             else
             {
-                //PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(new KeyValuePair<string, string>(activeQuestion, ((FoundChoice)stepContext.Result).Value));
                 // Adding 1 to the answers index because it starts from 0
                 PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.Add(activeQuestion, ++((FoundChoice)stepContext.Result).Index);
                 MainDialog.WriteToDB(stepContext, cancellationToken);
@@ -112,7 +111,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             foreach (string name in questionnairesNames)
             {
-                //List<QuestionTopFive> questionnaire = MainDialog.Response.Questionnaires.Where(kvp => kvp.Key == name); //MainDialog.Response.Questionnaires[name];
                 List<QuestionTopFive> questionnaire = (from kvp in MainDialog.Response.Questionnaires where kvp.Key == name select kvp.Value).FirstOrDefault();
 
                 foreach (QuestionTopFive obj in questionnaire)
@@ -164,7 +162,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private Attachment CreateAdaptiveCardAttachment()
         {
-
             AdaptiveCard card = new AdaptiveCard("1.0");
 
             // Specify speech for the card.  

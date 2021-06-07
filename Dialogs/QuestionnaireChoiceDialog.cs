@@ -35,10 +35,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var promptMessage = MessageFactory.Text(choiceMsgText, choiceMsgText, InputHints.ExpectingInput);
             var retryText = $"Please choose one option.\n\n{choiceMsgText}";
             var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
-            //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
             var questionnaireChoice = new List<Choice>();
-            //var questionnairesNames = MainDialog.Response.Questionnaires.Keys.ToList();
             var questionnairesNames = new List<string>();
 
             // Wait for the questionaires to be fetched from the database
@@ -58,19 +56,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            //activeQuestionnaire = MainDialog.Response.Questionnaires[((FoundChoice)stepContext.Result).Value];
             activeQuestionnaire = (from kvp in MainDialog.Response.Questionnaires where kvp.Key == ((FoundChoice)stepContext.Result).Value select kvp.Value).FirstOrDefault();
 
             return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
-
-            //switch (((FoundChoice)stepContext.Result).Index)
-            //{
-            //    case 0:
-            //        return await stepContext.BeginDialogAsync(nameof(TopFiveDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
-
-            //    default:
-            //        return await stepContext.EndDialogAsync(null, cancellationToken);
-            //}
         }
     }
 }
