@@ -78,6 +78,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 return await stepContext.BeginDialogAsync(nameof(UploadTipsDialog), NumberOfTipsDialog.NumberOfTips, cancellationToken);
         }
 
+        // Converts flase values of a tip to null values for better processing with rules engine
         private Tip NullifyFalseValues(Tip input)
         {
             if (input.Smoker == false)

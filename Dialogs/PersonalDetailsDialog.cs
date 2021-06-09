@@ -30,7 +30,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(new TextPrompt(nameof(TextPrompt), TextPromptValidatorAsync));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>)));
-            //AddDialog(new DateResolverDialog());
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {

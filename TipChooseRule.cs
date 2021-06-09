@@ -17,7 +17,6 @@ namespace CoreBot
 
         public override void Define()
         {
-            //List<Tip> tipList = new List<Tip>();
             PersonalDetails personalDetails = default;
             IEnumerable<Tip> tips = default;
 
@@ -36,30 +35,12 @@ namespace CoreBot
                     .Collect()
                     .Where(c => c.Any()));
 
-            //When()
-            //    .Match<PersonalDetails>(() => personalDetails)
-            //    // Cluster rule
-            //    .Query(() => tips, x => x.Match<Tip>(o => o.Cluster == personalDetails.Cluster || o.Cluster == null,
-            //        // Smoker rule
-            //        o => o.Smoker == personalDetails.Smoker && personalDetails.Smoker == true,
-            //        // Low sleep rule
-            //        o => o.LowSleep == true && personalDetails.Sleep <= lowSleepThreshold)
-            //        .Collect()
-            //        .Where(c => c.Any()));
-
-
-
             Then()
                 .Do(ctx => AddTips(tips));
         } 
 
         private static void AddTips(IEnumerable<Tip> tips)
         {
-            //foreach (var tip in tips)
-            //{
-            //    MainDialog.Response.TipList.Add(tip);
-            //}
-
             MainDialog.Response.TipList.AddRange(tips.Except(MainDialog.Response.TipList));
         }
     }

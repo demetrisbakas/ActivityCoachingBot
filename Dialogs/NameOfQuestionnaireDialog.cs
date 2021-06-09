@@ -16,9 +16,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public static string NameOfQuestionnaire { get; set; }
         public static int NumberOfQuestionsInQuestionnaire { get; set; }
         public static List<QuestionTopFive> QuestionnaireToUpload { get; set; } = new List<QuestionTopFive>();
-    //public static KeyValuePair<string, List<QuestionTopFive>> QuestionnaireToUpload { get; set; } = new KeyValuePair<string, List<QuestionTopFive>>();
 
-    public NameOfQuestionnaireDialog()
+        public NameOfQuestionnaireDialog()
            : base(nameof(NameOfQuestionnaireDialog))
         {
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), PositiveNumberValidatorAsync));

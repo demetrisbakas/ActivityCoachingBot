@@ -117,7 +117,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             if (!_luisRecognizer.IsConfigured)
             {
                 // LUIS is not configured.
-                return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), new BookingDetails(), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(PersonalDetailsDialog), PersonalDetailsDialog.PersonalDetails, cancellationToken);
             }
 
             // Call LUIS and prompt the corresponding dialog. Search the knowledge base if intent is not found.

@@ -45,22 +45,10 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> helpMessageList = new List<string>() { "This is the help message.\n\nBy greeting me you will enter the regular flow of the dialog.\n\nOther functionality includes:\n\nAsking to change your personal details\n\nAsking to answer a questionnaire\n\nAsking to upload data like tips and questionnaires, provided you have the credentials\n\nYou can tell me to exit or quit each dialog at any time" };
 
         public List<Tip> TipList { get; set; } = new List<Tip>();
-
-
         public List<KeyValuePair<string, List<QuestionTopFive>>> Questionnaires { get; set; } = new List<KeyValuePair<string, List<QuestionTopFive>>>();
-        //public List<QuestionTopFive> questionnaire = new List<QuestionTopFive>();
-
 
         public ResponseText()
         {
-            // Populate questionnaire
-            //questionnaire.Add(new QuestionTopFive("Is talkative", Extraversion));
-            //questionnaire.Add(new QuestionTopFive("Does a thorough job", Agreeableness, true));
-            //questionnaire.Add(new QuestionTopFive("Is depressed, blue", Conscientiousness));
-            //questionnaire.Add(new QuestionTopFive("Is original, comes up with new ideas", Neuroticism));
-            //questionnaire.Add(new QuestionTopFive("Is reserved", Openness));
-
-            //Questionnaires.Add(new KeyValuePair<string, List<QuestionTopFive>>("Big Five", questionnaire));
         }
 
         private string RandomiseList(List<string> inputList)
@@ -257,13 +245,7 @@ namespace Microsoft.BotBuilderSamples
             // Start match/resolve/act cycle
             session.Fire();
 
-
             return RandomiseList(TipList.Select(l => l.TipMessage).ToList());
         }
-
-        //public async void QuestionnairesAsync()
-        //{
-        //    Questionnaires = await MainDialog.Questionnaires;
-        //}
     }
 }

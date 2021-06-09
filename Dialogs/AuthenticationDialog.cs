@@ -27,8 +27,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
            : base(nameof(AuthenticationDialog))
         {
             AddDialog(new AdaptiveCardPrompt(AdaptivePromptId));
-            //AddDialog(new TextPrompt(nameof(TextPrompt)));
-            //AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 AuthenticateAsync,
@@ -54,8 +52,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 Prompt = new Activity
                 {
                     Attachments = new List<Attachment>() { cardAttachment },
-                    Type = ActivityTypes.Message,
-                    //Text = "Enter your passphrase",
+                    Type = ActivityTypes.Message
                 }
             };
 

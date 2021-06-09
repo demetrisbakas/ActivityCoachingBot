@@ -37,7 +37,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var promptMessage = MessageFactory.Text(MsgText, MsgText, InputHints.ExpectingInput);
             var retryText = $"Please choose one option.\n\n{MsgText}";
             var retryPromptText = MessageFactory.Text(retryText, retryText, InputHints.ExpectingInput);
-            //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
 
             return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = uploadChoice, RetryPrompt = retryPromptText, Style = ListStyle.HeroCard }, cancellationToken);
         }

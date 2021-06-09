@@ -11,6 +11,5 @@ namespace AdaptiveCardPromptSample.Welcome
             var fileRead = File.ReadAllText(filePath);
             return fileRead;
         }
-
     }
 }

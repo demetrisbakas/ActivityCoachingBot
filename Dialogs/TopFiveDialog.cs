@@ -37,7 +37,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> AskQuestionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            foreach (QuestionTopFive obj in QuestionnaireChoiceDialog.activeQuestionnaire /*MainDialog.Response.questionnaire*/)
+            foreach (QuestionTopFive obj in QuestionnaireChoiceDialog.activeQuestionnaire)
             {
                 if (!PersonalDetailsDialog.PersonalDetails.QuestionnaireAnswers.ContainsKey(obj.Question))
                 {
@@ -77,11 +77,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 var resultCard = CreateAdaptiveCardAttachment();
                 var response = MessageFactory.Attachment(resultCard/*, ssml: "Here are your results!"*/);
                 await stepContext.Context.SendActivityAsync(response, cancellationToken);
-
-                // Show results
-                //var resultsText = /*$"Here are your results!\n\nExtraversion: {PersonalDetailsDialog.PersonalDetails.Extraversion}\n\nAgreeableness: {PersonalDetailsDialog.PersonalDetails.Agreeableness}\n\nConscientiousness: {PersonalDetailsDialog.PersonalDetails.Conscientiousness}\n\nNeuroticism: {PersonalDetailsDialog.PersonalDetails.Neuroticism}\n\nOpenness: {PersonalDetailsDialog.PersonalDetails.Openness}\n\nCLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}"*/$"CLUSTER: {PersonalDetailsDialog.PersonalDetails.Cluster}\n\n{tip}";
-                //var resultsTextMessage = MessageFactory.Text(resultsText, resultsText, InputHints.IgnoringInput);
-                //await stepContext.Context.SendActivityAsync(resultsTextMessage, cancellationToken);
 
                 // Resseting the flag, in case new user comes
                 finished = false;

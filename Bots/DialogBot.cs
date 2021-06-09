@@ -40,9 +40,6 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
-            //var userName = turnContext.Activity.From.Name;
-            //var userID = turnContext.Activity.From.Id;
-            //await turnContext.SendActivityAsync($"Welcome - {userName}, {userID}");
             if (PersonalDetailsDialog.PersonalDetails?.UserID == null || turnContext.Activity.From.Id != PersonalDetailsDialog.PersonalDetails?.UserID)
             {
                 PersonalDetailsDialog.PersonalDetails = new PersonalDetails();
@@ -70,13 +67,6 @@ namespace Microsoft.BotBuilderSamples.Bots
 
             AddConversationReference(turnContext.Activity as Activity);
         }
-
-        //protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
-        //{
-        //    AddConversationReference(turnContext.Activity as Activity);
-
-        //    return base.OnConversationUpdateActivityAsync(turnContext, cancellationToken);
-        //}
 
         protected static void AddConversationReference(Activity activity)
         {

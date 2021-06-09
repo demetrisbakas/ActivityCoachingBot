@@ -61,7 +61,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             var result = JsonConvert.DeserializeObject<QuestionJSON>(stepContext.Result.ToString());
 
-
             NameOfQuestionnaireDialog.QuestionnaireToUpload.Add(ConvertToQuestionTopFive(result));
 
             if (--NameOfQuestionnaireDialog.NumberOfQuestionsInQuestionnaire == 0)
@@ -80,6 +79,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 return await stepContext.BeginDialogAsync(nameof(UploadQuestionnairesDialog), NameOfQuestionnaireDialog.NumberOfQuestionsInQuestionnaire, cancellationToken);
         }
 
+        // Converts adpative card input to QuestionTopFive, so it can be processed by the bot
         private QuestionTopFive ConvertToQuestionTopFive(QuestionJSON input)
         {
             QuestionTopFive output;

@@ -18,10 +18,8 @@ namespace Microsoft.BotBuilderSamples
         public enum Intent {
             AddQuestionnairesOrTips,
             AnswerQuestionnaires,
-            //BookFlight,
             Cancel,
             EnterPersonalDetails,
-            //GetWeather,
             Greet,
             None
         };
@@ -34,34 +32,6 @@ namespace Microsoft.BotBuilderSamples
             public DateTimeSpec[] datetime;
             public string[] personName;
             public Age[] age;
-
-            // Lists
-            //public string[][] Airport;
-
-            // Composites
-            //public class _InstanceFrom
-            //{
-            //    public InstanceData[] Airport;
-            //}
-            //public class FromClass
-            //{
-            //    public string[][] Airport;
-            //    [JsonProperty("$instance")]
-            //    public _InstanceFrom _instance;
-            //}
-            //public FromClass[] From;
-
-            //public class _InstanceTo
-            //{
-            //    public InstanceData[] Airport;
-            //}
-            //public class ToClass
-            //{
-            //    public string[][] Airport;
-            //    [JsonProperty("$instance")]
-            //    public _InstanceTo _instance;
-            //}
-            //public ToClass[] To;
 
             // Instance
             public class _Instance
