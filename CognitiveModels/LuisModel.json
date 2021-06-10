@@ -13,9 +13,6 @@
       "name": "AnswerQuestionnaires"
     },
     {
-      "name": "Cancel"
-    },
-    {
       "name": "EnterPersonalDetails"
     },
     {
@@ -33,10 +30,6 @@
   "patternAnyEntities": [],
   "regex_entities": [],
   "prebuiltEntities": [
-    {
-      "name": "datetimeV2",
-      "roles": []
-    },
     {
       "name": "personName",
       "roles": []

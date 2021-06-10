@@ -18,7 +18,6 @@ namespace Microsoft.BotBuilderSamples
         public enum Intent {
             AddQuestionnairesOrTips,
             AnswerQuestionnaires,
-            Cancel,
             EnterPersonalDetails,
             Greet,
             None
@@ -29,7 +28,6 @@ namespace Microsoft.BotBuilderSamples
         {
 
             // Built-in entities
-            public DateTimeSpec[] datetime;
             public string[] personName;
             public Age[] age;
 
