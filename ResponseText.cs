@@ -24,7 +24,7 @@ namespace Microsoft.BotBuilderSamples
         private readonly List<string> sexQuestionList = new List<string>() { "What is your sex?", "Are you a male or a female?" };
         private readonly List<string> questionnaireQuestionList = new List<string>() { "Please choose a questionnaire", "Which questionnaire would you like?" };
         private readonly List<string> finishedQuestionnaireList = new List<string>() { "This questionnaire has already been finished" };
-        private readonly List<string> welcomeMessageList = new List<string>() { "Hey I'm an Activity Coach bot!\n\nI can help you by providing daily tips to improve your everyday live, but you need to answer some questionnaires first.\n\nGreet me to enter the personal details dialog, or ask whatever you like.\n\nIf you need any help, ask away!" };
+        private readonly List<string> welcomeMessageList = new List<string>() { "Hey I'm an Activity Coach bot!\n\nI can help you by providing daily tips to improve your everyday life, but you need to answer some questionnaires first.\n\nGreet me to enter the personal details dialog, or ask whatever you like.\n\nIf you need any help, ask away!" };
         private readonly List<string> smokerMessageList = new List<string>() { "Are you a smoker?" };
         private readonly List<string> waterConsumptionMessageList = new List<string>() { "How many cups of water do you drink every day?" };
         private readonly List<string> waterConsumptionRetryList = new List<string>() { "Can you repeat the number of cups please?" };
