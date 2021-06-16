@@ -20,7 +20,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public NameOfQuestionnaireDialog()
            : base(nameof(NameOfQuestionnaireDialog))
         {
-            AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), PositiveNumberValidatorAsync));
+            AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 AskNameStepAsync,
@@ -58,21 +58,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             NumberOfQuestionsInQuestionnaire = (int)stepContext.Result;
 
             return await stepContext.BeginDialogAsync(nameof(UploadQuestionnairesDialog), NumberOfQuestionsInQuestionnaire, cancellationToken);
-        }
-
-        private async Task<bool> PositiveNumberValidatorAsync(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)
-        {
-            if (Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value != "")
-            {
-                var result = Int32.TryParse(Regex.Match(promptContext.Context.Activity.Text, @"\d+").Value, out var tempVal) ? tempVal : (int?)null;
-                if (result > 0)
-                {
-                    NumberOfQuestionsInQuestionnaire = (int)result;
-                    return await Task.FromResult(true);
-                }
-            }
-
-            return await Task.FromResult(false);
         }
     }
 }
