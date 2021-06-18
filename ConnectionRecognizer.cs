@@ -12,12 +12,10 @@ namespace Microsoft.BotBuilderSamples
 {
     public class ConnectionRecognizer : IRecognizer
     {
-        // QnA stuff
+        // QnA Maker Credentials
         private string QnAKnowledgebaseId = "fa15132e-f5ee-4d77-b221-4612dc834c96";
         private string QnAEndpointKey = "e1f51738-0030-42fb-8acf-40ffcb8f48d1";
         private string QnAEndpointHostName = "https://activitycoachingbotqnaservice.azurewebsites.net/qnamaker";
-
-
 
         private readonly LuisRecognizer _recognizer;
 
@@ -42,7 +40,6 @@ namespace Microsoft.BotBuilderSamples
                 _recognizer = new LuisRecognizer(recognizerOptions);
             }
 
-
             SampleQnA = new QnAMaker(new QnAMakerEndpoint
             {
                 KnowledgeBaseId = QnAKnowledgebaseId,
@@ -50,6 +47,8 @@ namespace Microsoft.BotBuilderSamples
                 Host = QnAEndpointHostName
             });
         }
+
+        public QnAMaker SampleQnA { get; private set; }
 
         // Returns true if luis is configured in the appsettings.json and initialized.
         public virtual bool IsConfigured => _recognizer != null;
@@ -60,8 +59,5 @@ namespace Microsoft.BotBuilderSamples
         public virtual async Task<T> RecognizeAsync<T>(ITurnContext turnContext, CancellationToken cancellationToken)
             where T : IRecognizerConvert, new()
             => await _recognizer.RecognizeAsync<T>(turnContext, cancellationToken);
-
-
-        public QnAMaker SampleQnA { get; private set; }
     }
 }
