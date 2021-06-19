@@ -50,7 +50,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return _luisRecognizer;
         }
 
-        //private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
         public static ResponseText Response { get; } = new ResponseText();
 
@@ -60,7 +59,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         {
             _luisRecognizer = luisRecognizer;
             Logger = logger;
-            //_conversationReferences = conversationReferences;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(personalDetailsDialog);
